@@ -1,0 +1,4 @@
+name: Explorer-Paper
+version: '1.0-SNAPSHOT'
+main: com.nicon.explorerPaper.ExplorerPaper
+api-version: '1.21'
