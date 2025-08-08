@@ -1,0 +1,3 @@
+blocks:
+  minecraft:stone:
+    lootTable: "ex:blocks_add/stone"
