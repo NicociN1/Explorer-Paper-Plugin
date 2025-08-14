@@ -40,6 +40,6 @@ class ExplorerBootstrap : PluginBootstrap {
     }
 
     override fun createPlugin(context: PluginProviderContext): JavaPlugin {
-        return Explorer()
+        return Main()
     }
 }

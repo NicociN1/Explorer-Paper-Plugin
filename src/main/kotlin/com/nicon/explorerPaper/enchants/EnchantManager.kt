@@ -1,30 +1,29 @@
-package com.nicon.explorerPaper.blocks
+package com.nicon.explorerPaper.enchants
 
-import com.nicon.explorerPaper.blocks.BlockData.BlockDetail
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
 import org.yaml.snakeyaml.representer.Representer
 
-object BlockManager {
-    private const val RESOURCE_PATH = "data/block.yml"
+object EnchantManager {
+    private const val RESOURCE_PATH = "data/enchant.yml"
 
-    fun getDetails(): Map<String, BlockDetail> {
+    fun getDetails(): Map<String, Map<String, Int>> {
         val options = LoaderOptions()
-        val constructor = Constructor(BlockData::class.java, options)
+        val constructor = Constructor(EnchantData::class.java, options)
         val dOptions = DumperOptions()
         val represent = Representer(dOptions)
         represent.getPropertyUtils().isSkipMissingProperties = true
         val y = Yaml(constructor, represent)
-        val blockData = y.loadAs<BlockData?>(
-            BlockData::class.java.getClassLoader().getResourceAsStream(
+        val enchantData = y.loadAs<EnchantData?>(
+            EnchantData::class.java.getClassLoader().getResourceAsStream(
                 RESOURCE_PATH
-            ), BlockData::class.java
+            ), EnchantData::class.java
         )
-        if (blockData == null) {
+        if (enchantData == null) {
             throw RuntimeException(RESOURCE_PATH + "が見つかりませんでした。")
         }
-        return blockData.blocks
+        return enchantData.enchants
     }
 }

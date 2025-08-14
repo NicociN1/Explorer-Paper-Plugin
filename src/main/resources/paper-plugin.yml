@@ -1,5 +1,6 @@
 name: Explorer-Paper
 version: '1.0-SNAPSHOT'
-main: com.nicon.explorerPaper.Explorer
+main: com.nicon.explorerPaper.Main
 api-version: '1.21'
 bootstrapper: com.nicon.explorerPaper.ExplorerBootstrap
+load: STARTUP

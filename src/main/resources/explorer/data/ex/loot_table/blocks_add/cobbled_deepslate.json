@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:empty",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:cobbled_deepslate",
+          "weight": 1,
+          "quality": 1
+        }
+      ]
+    }
+  ]
+}

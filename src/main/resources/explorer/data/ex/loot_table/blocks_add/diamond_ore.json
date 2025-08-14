@@ -6,13 +6,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:cobblestone",
+          "name": "minecraft:diamond_ore",
           "weight": 1,
-          "quality": 1,
-          "conditions": []
+          "quality": 1
         }
       ]
     }
-  ],
-  "functions": []
+  ]
 }

@@ -1,0 +1,233 @@
+recipes:
+  - id: stone_pickaxe
+    unlockCondition: "レベルが5になる"
+    goldCost: 100
+    requireItems:
+      - id: minecraft:cobblestone
+        amount: 8
+      - id: minecraft:stick
+        amount: 4
+    outputItem:
+      id: minecraft:stone_pickaxe
+      amount: 1
+
+  - id: stone_axe
+    unlockCondition: "レベルが5になる"
+    goldCost: 100
+    requireItems:
+      - id: minecraft:cobblestone
+        amount: 6
+      - id: minecraft:stick
+        amount: 4
+    outputItem:
+      id: minecraft:stone_axe
+      amount: 1
+
+  - id: stone_shovel
+    unlockCondition: "レベルが5になる"
+    goldCost: 100
+    requireItems:
+      - id: minecraft:cobblestone
+        amount: 4
+      - id: minecraft:stick
+        amount: 4
+    outputItem:
+      id: minecraft:stone_shovel
+      amount: 1
+
+  - id: iron_pickaxe
+    unlockCondition: "レベルが10になる"
+    goldCost: 900
+    requireItems:
+      - id: minecraft:iron_ingot
+        amount: 8
+      - id: minecraft:stick
+        amount: 4
+    outputItem:
+      id: minecraft:iron_pickaxe
+      amount: 1
+
+  - id: iron_axe
+    unlockCondition: "レベルが10になる"
+    goldCost: 900
+    requireItems:
+      - id: minecraft:iron_ingot
+        amount: 6
+      - id: minecraft:stick
+        amount: 4
+    outputItem:
+      id: minecraft:iron_axe
+      amount: 1
+
+  - id: iron_shovel
+    unlockCondition: "レベルが10になる"
+    goldCost: 900
+    requireItems:
+      - id: minecraft:iron_ingot
+        amount: 4
+      - id: minecraft:stick
+        amount: 4
+    outputItem:
+      id: minecraft:iron_shovel
+      amount: 1
+
+  - id: diamond_pickaxe
+    unlockCondition: "レベルが20になる"
+    goldCost: 8000
+    requireItems:
+      - id: minecraft:diamond
+        amount: 8
+      - id: minecraft:stick
+        amount: 4
+    outputItem:
+      id: minecraft:diamond_pickaxe
+      amount: 1
+
+  - id: diamond_axe
+    unlockCondition: "レベルが20になる"
+    goldCost: 8000
+    requireItems:
+      - id: minecraft:diamond
+        amount: 6
+      - id: minecraft:stick
+        amount: 4
+    outputItem:
+      id: minecraft:diamond_axe
+      amount: 1
+
+  - id: diamond_shovel
+    unlockCondition: "レベルが20になる"
+    goldCost: 10000
+    requireItems:
+      - id: minecraft:diamond
+        amount: 4
+      - id: minecraft:stick
+        amount: 4
+    outputItem:
+      id: minecraft:diamond_shovel
+      amount: 1
+
+  - id: stick
+    unlockCondition: "木を採掘する"
+    goldCost: 5
+    requireItems:
+      - id: minecraft:oak_log
+        amount: 4
+    outputItem:
+      id: minecraft:stick
+      amount: 1
+
+  - id: coal
+    unlockCondition: "石炭鉱石を採掘する"
+    goldCost: 25
+    requireItems:
+      - id: minecraft:coal_ore
+        amount: 2
+    outputItem:
+      id: minecraft:coal
+      amount: 1
+
+  - id: copper_ingot
+    unlockCondition: "銅鉱石を採掘する"
+    goldCost: 25
+    requireItems:
+      - id: minecraft:copper_ore
+        amount: 2
+      - id: minecraft:coal
+        amount: 1
+    outputItem:
+      id: minecraft:copper_ingot
+      amount: 1
+
+  - id: iron_ingot
+    unlockCondition: "鉄鉱石を採掘する"
+    goldCost: 50
+    requireItems:
+      - id: minecraft:iron_ore
+        amount: 2
+      - id: minecraft:coal
+        amount: 1
+    outputItem:
+      id: minecraft:iron_ingot
+      amount: 1
+
+  - id: redstone
+    unlockCondition: "レッドストーンを採掘する"
+    goldCost: 100
+    requireItems:
+      - id: minecraft:redstone_ore
+        amount: 2
+      - id: minecraft:coal
+        amount: 1
+    outputItem:
+      id: minecraft:redstone
+      amount: 1
+
+  - id: lapis_lazuli
+    unlockCondition: "ラピスラズリを採掘する"
+    goldCost: 100
+    requireItems:
+      - id: minecraft:lapis_ore
+        amount: 2
+      - id: minecraft:coal
+        amount: 1
+    outputItem:
+      id: minecraft:lapis_lazuli
+      amount: 1
+
+  - id: gold_ingot
+    unlockCondition: "金鉱石を採掘する"
+    goldCost: 200
+    requireItems:
+      - id: minecraft:gold_ore
+        amount: 2
+      - id: minecraft:coal
+        amount: 1
+    outputItem:
+      id: minecraft:gold_ingot
+      amount: 1
+
+  - id: diamond
+    unlockCondition: "ダイヤモンド鉱石を採掘する"
+    goldCost: 300
+    requireItems:
+      - id: minecraft:diamond_ore
+        amount: 2
+      - id: minecraft:coal
+        amount: 1
+    outputItem:
+      id: minecraft:diamond
+      amount: 1
+
+  - id: torch
+    unlockCondition: "石炭鉱石を採掘する"
+    goldCost: 15
+    requireItems:
+      - id: minecraft:coal
+        amount: 1
+      - id: minecraft:stick
+        amount: 1
+    outputItem:
+      id: minecraft:torch
+      amount: 8
+
+  - id: deepslate_to_cobblestone
+    unlockCondition: "ディープスレート(深層岩)を採掘する"
+    goldCost: 5
+    requireItems:
+      - id: minecraft:cobbled_deepslate
+        amount: 4
+    outputItem:
+      id: minecraft:cobblestone
+      amount: 6
+  - id: planks
+    unlockCondition: "木を採掘する"
+    goldCost: 10
+    requireItems:
+      - id: minecraft:oak_log
+        amount: 1
+    outputItem:
+      id: minecraft:oak_planks
+      amount: 2
+      properties:
+        customName: 建材

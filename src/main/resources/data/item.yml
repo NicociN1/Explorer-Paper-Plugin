@@ -1,0 +1,41 @@
+items:
+  minecraft:cobblestone:
+    sellPrice: 3
+  minecraft:dirt:
+    sellPrice: 2
+  minecraft:oak_log:
+    sellPrice: 3
+  minecraft:coal_ore:
+    sellPrice: 10
+  minecraft:coal:
+    sellPrice: 40
+  minecraft:copper_ore:
+    sellPrice: 10
+  minecraft:copper_ingot:
+    sellPrice: 40
+  minecraft:iron_ore:
+    sellPrice: 20
+  minecraft:iron_ingot:
+    sellPrice: 80
+  minecraft:redstone_ore:
+    sellPrice: 80
+  minecraft:redstone:
+    sellPrice: 320
+  minecraft:lapis_ore:
+    sellPrice: 80
+  minecraft:lapis_lazuli:
+    sellPrice: 320
+  minecraft:gold_ore:
+    sellPrice: 300
+  minecraft:gold_ingot:
+    sellPrice: 1200
+  minecraft:diamond_ore:
+    sellPrice: 500
+  minecraft:diamond:
+    sellPrice: 2000
+  minecraft:stick:
+    sellPrice: 3
+  minecraft:cobbled_deepslate:
+    sellPrice: 3
+  minecraft:glowstone_dust:
+    sellPrice: 50

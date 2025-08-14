@@ -1,16 +1,18 @@
 package com.nicon.explorerPaper.events.world
 
-import com.nicon.explorerPaper.Explorer
+import com.nicon.explorerPaper.Main
 import org.bukkit.Difficulty
 import org.bukkit.GameRule
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason
+import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.WorldLoadEvent
 
 class WorldEvents : Listener {
     @EventHandler
     fun onWorldLoad(event: WorldLoadEvent) {
-        Explorer.instance.logger.info("ワールドが読み込まれました！")
+        Main.instance.logger.info("ワールドが読み込まれました！")
         val world = event.world
         world.setGameRule<Boolean>(GameRule.DO_MOB_LOOT, false)
         world.setGameRule<Boolean>(GameRule.DO_FIRE_TICK, false)
@@ -32,5 +34,14 @@ class WorldEvents : Listener {
         world.time = 0
 
         world.difficulty = Difficulty.PEACEFUL
+    }
+
+    @EventHandler
+    fun onChunkLoad(event: ChunkLoadEvent) {
+        for (entity in event.world.entities) {
+            if (entity.entitySpawnReason == SpawnReason.NATURAL) {
+                entity.remove()
+            }
+        }
     }
 }

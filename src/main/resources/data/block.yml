@@ -1,3 +1,112 @@
 blocks:
-  minecraft:stone:
-    lootTable: "ex:blocks_add/stone"
+  minecraft:(stone|cobblestone):
+    lootTable: "ex:blocks_add/cobblestone"
+    xp: 4
+    appropriateTools: "minecraft:(wooden|stone|iron|diamond)_pickaxe"
+    gold:
+      chance: 0.1
+      min: 10
+      max: 30
+  minecraft:deepslate:
+    lootTable: "ex:blocks_add/cobbled_deepslate"
+    xp: 6
+    gold:
+      chance: 0.1
+      min: 20
+      max: 60
+  minecraft:(dirt|grass_block):
+    lootTable: "ex:blocks_add/dirt"
+    xp: 2
+    gold:
+      chance: 0.1
+      min: 5
+      max: 15
+  minecraft:oak_log:
+    lootTable: "ex:blocks_add/oak_log"
+    xp: 4
+    gold:
+      chance: 0.1
+      min: 10
+      max: 30
+
+  minecraft:(deepslate_)?coal_ore:
+    lootTable: "ex:blocks_add/coal_ore"
+    xp: 8
+    appropriateTools: "minecraft:(wooden|stone|iron|diamond)_pickaxe"
+    gold:
+      chance: 0.1
+      min: 20
+      max: 60
+  minecraft:(deepslate_)?copper_ore:
+    lootTable: "ex:blocks_add/copper_ore"
+    xp: 8
+    appropriateTools: "minecraft:(stone|iron|diamond)_pickaxe"
+    gold:
+      chance: 0.1
+      min: 20
+      max: 60
+  minecraft:(deepslate_)?iron_ore:
+    lootTable: "ex:blocks_add/iron_ore"
+    xp: 20
+    appropriateTools: "minecraft:(stone|iron|diamond)_pickaxe"
+    gold:
+      chance: 0.1
+      min: 50
+      max: 80
+  minecraft:(deepslate_)?redstone_ore:
+    lootTable: "ex:blocks_add/redstone_ore"
+    xp: 40
+    appropriateTools: "minecraft:(iron|diamond)_pickaxe"
+    gold:
+      chance: 0.1
+      min: 200
+      max: 300
+  minecraft:(deepslate_)?lapis_ore:
+    lootTable: "ex:blocks_add/lapis_ore"
+    xp: 40
+    appropriateTools: "minecraft:(iron|diamond)_pickaxe"
+    gold:
+      chance: 0.1
+      min: 200
+      max: 300
+  minecraft:(deepslate_)?gold_ore:
+    lootTable: "ex:blocks_add/gold_ore"
+    xp: 80
+    appropriateTools: "minecraft:(iron|diamond)_pickaxe"
+    gold:
+      chance: 1
+      min: 300
+      max: 300
+  minecraft:(deepslate_)?diamond_ore:
+    lootTable: "ex:blocks_add/diamond_ore"
+    xp: 150
+    appropriateTools: "minecraft:(iron|diamond)_pickaxe"
+    gold:
+      chance: 0.1
+      min: 500
+      max: 1000
+
+  minecraft:torch:
+    lootTable: "ex:blocks_add/stick"
+
+  minecraft:glowstone:
+    lootTable: "ex:blocks_add/glowstone_dust"
+    xp: 16
+    gold:
+      chance: 0.1
+      min: 80
+      max: 100
+
+  minecraft:(amethyst_block|budding_amethyst):
+    xp: 50
+    amethyst:
+      chance: 0.3
+      min: 1
+      max: 2
+
+  minecraft:(large|medium|small)_amethyst_bud:
+    xp: 80
+    amethyst:
+      chance: 1
+      min: 3
+      max: 5

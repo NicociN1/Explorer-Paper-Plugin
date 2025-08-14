@@ -1,12 +1,13 @@
 package com.nicon.explorerPaper.utils
 
-import com.nicon.explorerPaper.Explorer
+import com.nicon.explorerPaper.Main
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
@@ -28,7 +29,7 @@ class InventoryUI : Listener {
         currentPage = Page()
         inventory = Bukkit.createInventory(null, size, Component.text(title))
 
-        Bukkit.getPluginManager().registerEvents(this, Explorer.instance)
+        Bukkit.getPluginManager().registerEvents(this, Main.instance)
     }
 
     fun pushPage(page: Page) {
@@ -54,7 +55,10 @@ class InventoryUI : Listener {
         player.openInventory(inventory)
     }
 
-    class Page() {
+    class Page {
+        var onClickHandler: Runnable = Runnable {}
+            private set
+
         var uiSlots: MutableMap<Int, UISlot> = mutableMapOf()
             private set
 
@@ -73,6 +77,11 @@ class InventoryUI : Listener {
             isLockedEmptySlot = false
             return this
         }
+
+        fun onClick(onClickHandler: Runnable): Page {
+            this.onClickHandler = onClickHandler
+            return this
+        }
     }
 
     class UISlot(
@@ -86,10 +95,23 @@ class InventoryUI : Listener {
 
         val uiSlot = currentPage.uiSlots[event.slot]
         if (uiSlot != null) {
-            uiSlot.onClick.run()
             event.isCancelled = true
+            uiSlot.onClick.run()
         } else if (currentPage.isLockedEmptySlot) {
             event.isCancelled = true
+        }
+
+        currentPage.onClickHandler.run()
+    }
+
+    @EventHandler
+    fun onCloseInventory(event: InventoryCloseEvent) {
+        if (event.inventory !== inventory) return
+
+        for (slot in 0..<inventory.size) {
+            if (currentPage.uiSlots.keys.contains(slot)) continue
+            val item = inventory.getItem(slot) ?: continue
+            player.inventory.addItem(item)
         }
     }
 }
