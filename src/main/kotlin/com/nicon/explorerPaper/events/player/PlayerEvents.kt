@@ -10,6 +10,7 @@ import com.nicon.explorerPaper.utils.ItemUtils
 import com.nicon.explorerPaper.utils.PlayerUtils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
@@ -29,6 +30,8 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import org.bukkit.scoreboard.Criteria
+import org.bukkit.scoreboard.DisplaySlot
 
 class PlayerEvents : Listener {
     @EventHandler
@@ -62,6 +65,15 @@ class PlayerEvents : Listener {
             val itemStack = player.inventory.getItem(slot) ?: continue
             player.inventory.setItem(slot, itemStack)
         }
+
+        val board = Bukkit.getScoreboardManager().newScoreboard
+        val objective = board.registerNewObjective(
+            "sidebar",
+            Criteria.DUMMY,
+            Component.text().content("<Explorer Server>").decoration(TextDecoration.BOLD, true).build()
+        )
+        objective.displaySlot = DisplaySlot.SIDEBAR
+        player.scoreboard = board
 
         PlayerUtils.refreshLevelUnlockRecipe(player)
         PlayerUtils.refreshSidebar(player)
