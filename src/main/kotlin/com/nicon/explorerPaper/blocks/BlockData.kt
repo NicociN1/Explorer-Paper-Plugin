@@ -1,18 +1,22 @@
 package com.nicon.explorerPaper.blocks
 
+import com.nicon.explorerPaper.utils.PlayerUtils
+
 class BlockData {
     var blocks: MutableMap<String, BlockDetail> = mutableMapOf()
 
-    constructor() {}
+    constructor()
 
     class BlockDetail {
         var lootTable: String? = null
-        var xp: Int = 0
+        var smeltedLootTable: String? = null
         var gold: Drop? = null
         var amethyst: Drop? = null
         var appropriateTools: String? = null
+        var xp: Int? = null
+        var levelType: PlayerUtils.LevelType? = null
 
-        constructor() {}
+        constructor()
 
         class Drop {
             var chance: Float = 0f

@@ -1,0 +1,188 @@
+skills:
+  LAND:
+    - id: "land_gold_rush"
+      name: "ゴールドラッシュ"
+      iconItemId: "minecraft:gold_ingot"
+      skillLevels:
+        - unlockLevel: 10
+          description: "土系ブロック採掘時にゴールド出現率と量が2倍"
+        - unlockLevel: 50
+          description: "土系ブロック採掘時にゴールド出現率と量がさらに2倍"
+
+    - id: "land_drop_antiques"
+      name: "骨董品探知"
+      iconItemId: "minecraft:decorated_pot"
+      skillLevels:
+        - unlockLevel: 20
+          description: "土系ブロック採掘時に稀に高い価値がつくアイテムがドロップ"
+        - unlockLevel: 60
+          description: "骨董品アイテムのドロップ確率が増加"
+
+    - id: "land_drop_explorers_chest"
+      name: "探検家の直感"
+      iconItemId: "minecraft:chest"
+      skillLevels:
+        - unlockLevel: 30
+          description: "土系ブロック採掘時に稀に探検家のチェストがドロップ"
+        - unlockLevel: 70
+          description: "探検家のチェストのドロップ確率が増加"
+
+    - id: "land_area_mining"
+      name: "範囲破壊"
+      iconItemId: "minecraft:iron_shovel"
+      skillLevels:
+        - unlockLevel: 40
+          manaCost: 40
+          description: "3x3の範囲内の土系ブロックを一括破壊\n40マナ消費"
+          states:
+            - INACTIVE
+            - 3x3
+        - unlockLevel: 80
+          manaCost: 100
+          description: "5x5の範囲内の土系ブロックを一括破壊\n100マナ消費"
+          states:
+            - INACTIVE
+            - 3x3
+            - 5x5
+
+  WOOD:
+    - id: "wood_double_drop"
+      name: "ダブルドロップ"
+      iconItemId: "minecraft:oak_log"
+      skillLevels:
+        - unlockLevel: 10
+          description: "木系ブロック採掘時に一定確率でドロップ量2倍"
+        - unlockLevel: 50
+          description: "高確率でドロップ量2倍"
+
+    - id: "wood_drop_fruits"
+      name: "森の恵み"
+      iconItemId: "minecraft:golden_apple"
+      skillLevels:
+        - unlockLevel: 20
+          description: "葉っぱ破壊時に一定確率で果実をドロップ"
+        - unlockLevel: 60
+          description: "果実のドロップ確率増加"
+
+    - id: "wood_drop_sap"
+      name: "樹液の雫"
+      iconItemId: "minecraft:honey_bottle"
+      skillLevels:
+        - unlockLevel: 30
+          description: "木系ブロック採掘時に稀に樹液がドロップ"
+        - unlockLevel: 70
+          description: "樹液のドロップ確率増加"
+
+    - id: "wood_area_mining"
+      name: "一括破壊"
+      iconItemId: "minecraft:iron_shovel"
+      skillLevels:
+        - unlockLevel: 40
+          manaCost: 40
+          description: "幹を一括破壊\n40マナ消費"
+          states:
+            - INACTIVE
+            - TRUNK_ONLY
+        - unlockLevel: 80
+          manaCost: 100
+          description: "幹と葉っぱを一括破壊\n100マナ消費"
+          states:
+            - INACTIVE
+            - TRUNK_ONLY
+            - WOOD_ALL
+
+  STONE:
+    - id: "stone_drop_ore"
+      name: "鉱石混入"
+      iconItemId: "minecraft:coal_ore"
+      skillLevels:
+        - unlockLevel: 10
+          description: "石系ブロック採掘時に低確率でランダムな鉱石がドロップ"
+        - unlockLevel: 50
+          description: "レア鉱石のドロップ確率増加"
+
+    - id: "stone_drop_bone"
+      name: "古代の遺骨"
+      iconItemId: "minecraft:bone_block"
+      skillLevels:
+        - unlockLevel: 20
+          description: "石系ブロック採掘時に稀に化石ブロックがドロップ"
+        - unlockLevel: 60
+          description: "化石ブロックのドロップ確率増加"
+
+    - id: "stone_drop_ancient_debris"
+      name: "深層岩の残骸"
+      iconItemId: "minecraft:ancient_debris"
+      skillLevels:
+        - unlockLevel: 30
+          description: "ディープスレート採掘時にごく稀に古代の残骸ドロップ"
+        - unlockLevel: 70
+          description: "古代の残骸のドロップ確率増加"
+
+    - id: "stone_area_mining"
+      name: "範囲破壊"
+      iconItemId: "minecraft:iron_pickaxe"
+      skillLevels:
+        - unlockLevel: 40
+          manaCost: 40
+          description: "3x3の範囲内の石系ブロックを一括破壊\n40マナ消費"
+          states:
+            - INACTIVE
+            - 3x3
+        - unlockLevel: 80
+          manaCost: 100
+          description: "5x5の範囲内の石系ブロックを一括破壊\n100マナ消費"
+          states:
+            - INACTIVE
+            - 3x3
+            - 5x5
+  ORE:
+    - id: "ore_random_buff"
+      name: "鉱夫の祝福"
+      iconItemId: "minecraft:potion"
+      skillLevels:
+        - unlockLevel: 10
+          description: "鉱石採掘時一定確率でランダムなバフを得る"
+        - unlockLevel: 50
+          description: "バフを得る確率とレベル上昇"
+
+    - id: "ore_auto_smelting"
+      name: "自動精錬"
+      iconItemId: "minecraft:blast_furnace"
+      skillLevels:
+        - unlockLevel: 20
+          description: "下位鉱石の採掘時に自動で精錬"
+          states:
+            - INACTIVE
+            - ACTIVE
+        - unlockLevel: 60
+          description: "上位鉱石も自動で精錬"
+          states:
+            - INACTIVE
+            - ACTIVE
+
+    - id: "ore_drop_bonus"
+      name: "幸運"
+      iconItemId: "minecraft:diamond"
+      skillLevels:
+        - unlockLevel: 30
+          description: "一定確率で鉱石のドロップ量増加"
+        - unlockLevel: 70
+          description: "鉱石のドロップ量をさらに増加"
+
+    - id: "ore_area_mining"
+      name: "一括破壊"
+      iconItemId: "minecraft:iron_ore"
+      skillLevels:
+        - unlockLevel: 40
+          manaCost: 40
+          description: "鉱石を一括破壊(鉱脈を除く)\n40マナ消費"
+          states:
+            - INACTIVE
+            - ACTIVE
+        - unlockLevel: 80
+          manaCost: 100
+          description: "鉱脈も一括破壊\n100マナ消費"
+          states:
+            - INACTIVE
+            - ACTIVE

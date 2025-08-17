@@ -1,6 +1,8 @@
 package com.nicon.explorerPaper.definitions
 
-class MiscConstants {
+import org.bukkit.Material
+
+class Constants {
     companion object {
         /**
          * ドロップ不可なアイテムIDリスト
@@ -27,6 +29,23 @@ class MiscConstants {
         val ENABLED_PLACE_BLOCKS = arrayOf(
             "minecraft:torch",
             "minecraft:oak_planks"
+        )
+
+        /**
+         * 右クリックを無効化するブロックリスト
+         */
+        val DISABLED_INTERACT_BLOCKS = arrayOf(
+            Material.OAK_LOG
+        )
+
+        /**
+         * 上位鉱石リスト
+         */
+        val HIGH_GRADE_ORES = arrayOf(
+            Material.GOLD_INGOT,
+            Material.LAPIS_ORE,
+            Material.REDSTONE_ORE,
+            Material.DIAMOND_ORE
         )
     }
 }

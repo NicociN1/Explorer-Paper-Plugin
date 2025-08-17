@@ -1,7 +1,8 @@
 recipes:
-  - id: stone_pickaxe
-    unlockCondition: "レベルが5になる"
+  - tag: stone_level_5
+    unlockCondition: "採石レベルが5になる"
     goldCost: 100
+    name: "石のツルハシ"
     requireItems:
       - id: minecraft:cobblestone
         amount: 8
@@ -11,9 +12,10 @@ recipes:
       id: minecraft:stone_pickaxe
       amount: 1
 
-  - id: stone_axe
-    unlockCondition: "レベルが5になる"
+  - tag: wood_level_5
+    unlockCondition: "伐採レベルが5になる"
     goldCost: 100
+    name: "石の斧"
     requireItems:
       - id: minecraft:cobblestone
         amount: 6
@@ -23,9 +25,10 @@ recipes:
       id: minecraft:stone_axe
       amount: 1
 
-  - id: stone_shovel
-    unlockCondition: "レベルが5になる"
+  - tag: land_level_5
+    unlockCondition: "整地レベルが5になる"
     goldCost: 100
+    name: "石のシャベル"
     requireItems:
       - id: minecraft:cobblestone
         amount: 4
@@ -35,9 +38,10 @@ recipes:
       id: minecraft:stone_shovel
       amount: 1
 
-  - id: iron_pickaxe
-    unlockCondition: "レベルが10になる"
+  - tag: stone_level_15
+    unlockCondition: "採石レベルが15になる"
     goldCost: 900
+    name: "鉄のツルハシ"
     requireItems:
       - id: minecraft:iron_ingot
         amount: 8
@@ -47,9 +51,10 @@ recipes:
       id: minecraft:iron_pickaxe
       amount: 1
 
-  - id: iron_axe
-    unlockCondition: "レベルが10になる"
+  - tag: wood_level_15
+    unlockCondition: "伐採レベルが15になる"
     goldCost: 900
+    name: "鉄の斧"
     requireItems:
       - id: minecraft:iron_ingot
         amount: 6
@@ -59,9 +64,10 @@ recipes:
       id: minecraft:iron_axe
       amount: 1
 
-  - id: iron_shovel
-    unlockCondition: "レベルが10になる"
+  - tag: land_level_15
+    unlockCondition: "整地レベルが15になる"
     goldCost: 900
+    name: "鉄のシャベル"
     requireItems:
       - id: minecraft:iron_ingot
         amount: 4
@@ -71,9 +77,10 @@ recipes:
       id: minecraft:iron_shovel
       amount: 1
 
-  - id: diamond_pickaxe
-    unlockCondition: "レベルが20になる"
+  - tag: stone_level_25
+    unlockCondition: "採石レベルが25になる"
     goldCost: 8000
+    name: "ダイヤモンドのツルハシ"
     requireItems:
       - id: minecraft:diamond
         amount: 8
@@ -83,9 +90,10 @@ recipes:
       id: minecraft:diamond_pickaxe
       amount: 1
 
-  - id: diamond_axe
-    unlockCondition: "レベルが20になる"
+  - tag: wood_level_25
+    unlockCondition: "伐採レベルが25になる"
     goldCost: 8000
+    name: "ダイヤモンドの斧"
     requireItems:
       - id: minecraft:diamond
         amount: 6
@@ -95,9 +103,10 @@ recipes:
       id: minecraft:diamond_axe
       amount: 1
 
-  - id: diamond_shovel
-    unlockCondition: "レベルが20になる"
+  - tag: land_level_25
+    unlockCondition: "整地レベルが25になる"
     goldCost: 10000
+    name: "ダイヤモンドのシャベル"
     requireItems:
       - id: minecraft:diamond
         amount: 4
@@ -107,9 +116,10 @@ recipes:
       id: minecraft:diamond_shovel
       amount: 1
 
-  - id: stick
+  - tag: wood_mined
     unlockCondition: "木を採掘する"
     goldCost: 5
+    name: "棒"
     requireItems:
       - id: minecraft:oak_log
         amount: 4
@@ -117,9 +127,10 @@ recipes:
       id: minecraft:stick
       amount: 1
 
-  - id: coal
+  - tag: coal_ore_mined
     unlockCondition: "石炭鉱石を採掘する"
     goldCost: 25
+    name: "石炭"
     requireItems:
       - id: minecraft:coal_ore
         amount: 2
@@ -127,9 +138,10 @@ recipes:
       id: minecraft:coal
       amount: 1
 
-  - id: copper_ingot
+  - tag: copper_ore_mined
     unlockCondition: "銅鉱石を採掘する"
     goldCost: 25
+    name: "銅のインゴット"
     requireItems:
       - id: minecraft:copper_ore
         amount: 2
@@ -139,9 +151,10 @@ recipes:
       id: minecraft:copper_ingot
       amount: 1
 
-  - id: iron_ingot
+  - tag: iron_ore_mined
     unlockCondition: "鉄鉱石を採掘する"
     goldCost: 50
+    name: "鉄のインゴット"
     requireItems:
       - id: minecraft:iron_ore
         amount: 2
@@ -151,9 +164,10 @@ recipes:
       id: minecraft:iron_ingot
       amount: 1
 
-  - id: redstone
+  - tag: redstone_ore_mined
     unlockCondition: "レッドストーンを採掘する"
     goldCost: 100
+    name: "レッドストーン"
     requireItems:
       - id: minecraft:redstone_ore
         amount: 2
@@ -163,9 +177,10 @@ recipes:
       id: minecraft:redstone
       amount: 1
 
-  - id: lapis_lazuli
+  - tag: lapis_ore_mined
     unlockCondition: "ラピスラズリを採掘する"
     goldCost: 100
+    name: "ラピスラズリ"
     requireItems:
       - id: minecraft:lapis_ore
         amount: 2
@@ -175,9 +190,10 @@ recipes:
       id: minecraft:lapis_lazuli
       amount: 1
 
-  - id: gold_ingot
+  - tag: gold_ore_mined
     unlockCondition: "金鉱石を採掘する"
     goldCost: 200
+    name: "金のインゴット"
     requireItems:
       - id: minecraft:gold_ore
         amount: 2
@@ -187,9 +203,10 @@ recipes:
       id: minecraft:gold_ingot
       amount: 1
 
-  - id: diamond
+  - tag: diamond_ore_mined
     unlockCondition: "ダイヤモンド鉱石を採掘する"
     goldCost: 300
+    name: "ダイヤモンド"
     requireItems:
       - id: minecraft:diamond_ore
         amount: 2
@@ -199,9 +216,10 @@ recipes:
       id: minecraft:diamond
       amount: 1
 
-  - id: torch
+  - tag: coal_ore_mined
     unlockCondition: "石炭鉱石を採掘する"
     goldCost: 15
+    name: "松明"
     requireItems:
       - id: minecraft:coal
         amount: 1
@@ -211,18 +229,21 @@ recipes:
       id: minecraft:torch
       amount: 8
 
-  - id: deepslate_to_cobblestone
+  - tag: deepslate_mined
     unlockCondition: "ディープスレート(深層岩)を採掘する"
     goldCost: 5
+    name: "丸石"
     requireItems:
       - id: minecraft:cobbled_deepslate
         amount: 4
     outputItem:
       id: minecraft:cobblestone
       amount: 6
-  - id: planks
+
+  - tag: wood_mined
     unlockCondition: "木を採掘する"
     goldCost: 10
+    name: "建材"
     requireItems:
       - id: minecraft:oak_log
         amount: 1
@@ -231,3 +252,14 @@ recipes:
       amount: 2
       properties:
         customName: 建材
+
+  - tag: stone_level_20
+    unlockCondition: "採石レベルが20に達する"
+    goldCost: 5000
+    name: "スケルトンの頭"
+    requireItems:
+      - id: minecraft:bone_block
+        amount: 64
+    outputItem:
+      id: minecraft:skeleton_skull
+      amount: 1

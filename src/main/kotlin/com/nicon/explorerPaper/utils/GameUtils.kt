@@ -1,12 +1,24 @@
 package com.nicon.explorerPaper.utils
 
 import com.nicon.explorerPaper.Main
+import com.nicon.explorerPaper.blocks.BlockData
+import com.nicon.explorerPaper.blocks.BlockData.BlockDetail
+import com.nicon.explorerPaper.blocks.BlockHandlers
+import com.nicon.explorerPaper.skills.SkillData
+import com.nicon.explorerPaper.skills.SkillData.SkillDetail
+import com.nicon.explorerPaper.utils.PlayerUtils.LevelType
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
+import org.bukkit.block.Block
+import org.bukkit.block.BlockFace
 import org.bukkit.entity.Item
+import org.bukkit.entity.Player
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
+import org.bukkit.loot.LootContext
 import java.util.function.Consumer
 import kotlin.math.floor
 import kotlin.math.min
@@ -59,21 +71,84 @@ object GameUtils {
         return gold
     }
 
-    fun setItemDetail(itemStack: ItemStack): ItemStack {
-        val newItemStack = itemStack.clone()
-        val itemDetail = Main.itemDetails[itemStack.type.key.toString()] ?: return newItemStack
-        newItemStack.editMeta { meta ->
-            meta.lore(
-                listOf(
-                    Component
-                        .text()
-                        .color(NamedTextColor.GOLD)
-                        .content("価値: ${itemDetail.sellPrice}G")
-                        .build()
-                )
-            )
-        }
+    fun openLootChest(player: Player, lootTablePath: String, title: String) {
+        val inventory = Bukkit.createInventory(null, InventoryType.CHEST, Component.text(title))
+        val path = NamespacedKey.fromString(lootTablePath) ?: return
+        val loottable = Bukkit.getLootTable(path) ?: return
 
-        return newItemStack
+        val lootContext = LootContext.Builder(player.location).build()
+        loottable.fillInventory(inventory, null, lootContext)
+        player.openInventory(inventory)
+    }
+
+    fun getBlockDetail(block: Block): BlockDetail? {
+        val blockId = block.type.key.toString()
+        return Main.blockDetails.entries.firstOrNull { (regexStr, _) ->
+            Regex(regexStr).matches(blockId)
+        }?.value
+    }
+
+    fun areaMining(player: Player, block: Block, levelType: LevelType, size: Int) {
+        val rayTrace = player.rayTraceBlocks(10.0) ?: return
+        val hitBlock = rayTrace.hitBlock ?: return
+        val face = rayTrace.hitBlockFace ?: return
+
+        if (hitBlock != block) return
+        val xHalf = if (face == BlockFace.EAST || face == BlockFace.WEST) 0 else size / 2
+        val zHalf = if (face == BlockFace.SOUTH || face == BlockFace.NORTH) 0 else size / 2
+        val yRange = if (face == BlockFace.UP || face == BlockFace.DOWN) 0..0 else (0..<size)
+        for (dx in -xHalf..xHalf) {
+            for (dy in yRange) {
+                for (dz in -zHalf..zHalf) {
+                    val target = block.location.clone().add(dx.toDouble(), dy.toDouble(), dz.toDouble()).block
+
+                    if (block == target) continue
+                    if (getBlockDetail(target)?.levelType != levelType) continue
+
+                    BlockHandlers.onBreak(player, target)
+                    target.type = Material.AIR
+                }
+            }
+        }
+    }
+
+    fun allMining(player: Player, startBlock: Block, allowBlocks: Array<Material>, limit: Int = 256) {
+        val blocksToBreak = mutableSetOf<Block>()
+        collectAdjacentBlocks(startBlock, allowBlocks, blocksToBreak, limit)
+
+        if (blocksToBreak.size <= limit) {
+            for (block in blocksToBreak) {
+                if (block.type != Material.AIR) {
+                    if (startBlock == block) continue
+                    BlockHandlers.onBreak(player, block)
+                    block.type = Material.AIR
+                }
+            }
+        }
+    }
+
+    private fun collectAdjacentBlocks(block: Block, allowBlocks: Array<Material>, collected: MutableSet<Block>, limit: Int) {
+        if (block.type == Material.AIR) return
+        if (!collected.add(block)) return
+
+        val faces = listOf(
+            BlockFace.UP,
+            BlockFace.DOWN,
+            BlockFace.NORTH,
+            BlockFace.SOUTH,
+            BlockFace.EAST,
+            BlockFace.WEST
+        )
+
+        for (face in faces) {
+            val neighbor = block.getRelative(face)
+            if (!allowBlocks.contains(neighbor.type)) continue
+            collectAdjacentBlocks(neighbor, allowBlocks, collected, limit)
+        }
+    }
+
+    fun getSkillDetail(levelType: LevelType, id: String): SkillDetail? {
+        val skillDetails = Main.skillDetails[levelType] ?: return null
+        return skillDetails.first { detail -> detail.id == id }
     }
 }

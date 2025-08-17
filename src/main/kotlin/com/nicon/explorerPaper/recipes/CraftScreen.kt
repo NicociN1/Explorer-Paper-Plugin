@@ -3,7 +3,6 @@ package com.nicon.explorerPaper.recipes
 import com.nicon.explorerPaper.Main
 import com.nicon.explorerPaper.definitions.ItemDefinitions
 import com.nicon.explorerPaper.recipes.RecipeData.RecipeDetail
-import com.nicon.explorerPaper.utils.GameUtils
 import com.nicon.explorerPaper.utils.InventoryUI
 import com.nicon.explorerPaper.utils.InventoryUI.Page
 import com.nicon.explorerPaper.utils.InventoryUI.UISlot
@@ -33,7 +32,7 @@ object CraftScreen {
 
         val gridIcon = ItemDefinitions.getGridIcon()
 
-        val unlockedRecipes = PlayerUtils.PlayerDatabase.getUnlockedRecipes(player)
+        val unlockedRecipes = PlayerUtils.PlayerDatabase.getUnlockedRecipeTags(player)
 
         for (slot in fromIndex..min(toIndex, recipeDetails.size - 1)) {
             val recipeDetail = recipeDetails[slot]
@@ -51,7 +50,7 @@ object CraftScreen {
                     )
                 }
                 val lore = mutableListOf<Component>()
-                if (unlockedRecipes.contains(recipeDetail.id)) {
+                if (unlockedRecipes.contains(recipeDetail.tag)) {
                     lore.add(
                         Component
                             .text()
@@ -204,13 +203,10 @@ object CraftScreen {
                         }
 
                         val outputMaterial = Material.matchMaterial(recipeDetail.outputItem.id) ?: return@UISlot
-                        val itemStack =
-                            GameUtils.setItemDetail(ItemStack.of(outputMaterial, recipeDetail.outputItem.amount))
-
-                        val detailedItemStack = GameUtils.setItemDetail(itemStack)
+                        val itemStack = ItemStack.of(outputMaterial, recipeDetail.outputItem.amount)
 
                         if (recipeDetail.outputItem.properties != null) {
-                            detailedItemStack.editMeta { meta ->
+                            itemStack.editMeta { meta ->
                                 if (recipeDetail.outputItem.properties!!.customName != null) {
                                     meta.displayName(
                                         Component
@@ -223,7 +219,7 @@ object CraftScreen {
                             }
                         }
 
-                        PlayerUtils.safeAddItem(player, detailedItemStack)
+                        PlayerUtils.safeAddItem(player, itemStack)
 
                         player.playSound(player.location, Sound.BLOCK_ANVIL_USE, 1f, 1f)
 
@@ -311,8 +307,8 @@ object CraftScreen {
     }
 
     fun getIsUnlockedRecipe(player: Player, recipeDetail: RecipeDetail): Boolean {
-        val unlockedRecipes = PlayerUtils.PlayerDatabase.getUnlockedRecipes(player)
-        return unlockedRecipes.contains(recipeDetail.id)
+        val unlockedRecipes = PlayerUtils.PlayerDatabase.getUnlockedRecipeTags(player)
+        return unlockedRecipes.contains(recipeDetail.tag)
     }
 
     fun getIsHaveCosts(player: Player, recipeDetail: RecipeDetail): Boolean {

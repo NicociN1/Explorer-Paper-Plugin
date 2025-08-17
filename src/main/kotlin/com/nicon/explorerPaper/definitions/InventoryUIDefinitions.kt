@@ -3,11 +3,13 @@ package com.nicon.explorerPaper.definitions
 import com.nicon.explorerPaper.Main
 import com.nicon.explorerPaper.enchants.EnchantScreen
 import com.nicon.explorerPaper.recipes.CraftScreen
+import com.nicon.explorerPaper.skills.SkillScreen
 import com.nicon.explorerPaper.utils.GameUtils
 import com.nicon.explorerPaper.utils.InventoryUI
 import com.nicon.explorerPaper.utils.InventoryUI.Page
 import com.nicon.explorerPaper.utils.InventoryUI.UISlot
 import com.nicon.explorerPaper.utils.PlayerUtils
+import com.nicon.explorerPaper.utils.Utils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -279,12 +281,12 @@ class InventoryUIDefinitions {
                             Bukkit.getScheduler().runTaskLater(Main.instance, Runnable {
                                 player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f)
 
-                                for (slot in 0..<inventoryUI.inventory.size - 1) {
+                                for (slot in 0..<inventoryUI.inventory.size - 1) { //一番最後のスロットは除く
                                     val itemStack = inventoryUI.inventory.getItem(slot) ?: continue
-                                    val itemDetail = Main.itemDetails[itemStack.type.key.toString()] ?: continue //一番最後のスロットは除く
+                                    val itemDetail = Main.itemDetails[itemStack.type.key.toString()] ?: continue
                                     inventoryUI.inventory.setItem(slot, ItemStack.empty())
 
-                                    val sellPrice = itemDetail.sellPrice
+                                    val sellPrice = itemDetail.sellPrice * itemStack.amount
                                     val currentGold = PlayerUtils.PlayerDatabase.getGold(player) ?: 0
                                     PlayerUtils.PlayerDatabase.setGold(player, currentGold + sellPrice)
                                 }
@@ -307,7 +309,7 @@ class InventoryUIDefinitions {
                                                 .text()
                                                 .decoration(TextDecoration.ITALIC, false)
                                                 .color(NamedTextColor.GOLD)
-                                                .content("換金価格: ${sellPrice}Gold")
+                                                .content("換金価格: ${Utils.addCommaToNumber(sellPrice)}Gold")
                                                 .build()
                                         )
                                     )
@@ -317,6 +319,9 @@ class InventoryUIDefinitions {
                         }
 
                     inventoryUI.pushPage(sellPage)
+                })
+                .button(22, UISlot(ItemDefinitions.getPlayerInfoIcon(player)) {
+                    SkillScreen.openLevelsMenu(inventoryUI, player)
                 })
                 .button(29, UISlot(initialToolsIcon) {
                     player.playSound(player.location, Sound.BLOCK_STONE_BREAK, 1f, 1f)

@@ -18,12 +18,36 @@ data class Players(
     @DatabaseField(columnName = "blocks_mined")
     var blocksMined: Int = 0,
 
-    @DatabaseField(columnName = "unlocked_recipes", defaultValue = "[]")
-    var unlockedRecipes: String = "[]",
+    @DatabaseField(columnName = "unlocked_recipe_tags", defaultValue = "[]")
+    var unlockedRecipeTags: String = "[]",
+
+    @DatabaseField(columnName = "land_level")
+    var landLevel: Int = 0,
+
+    @DatabaseField(columnName = "land_xp")
+    var landXp: Int = 0,
+
+    @DatabaseField(columnName = "wood_level")
+    var woodLevel: Int = 0,
+
+    @DatabaseField(columnName = "wood_xp")
+    var woodXp: Int = 0,
+
+    @DatabaseField(columnName = "stone_level")
+    var stoneLevel: Int = 0,
+
+    @DatabaseField(columnName = "stone_xp")
+    var stoneXp: Int = 0,
+
+    @DatabaseField(columnName = "ore_level")
+    var oreLevel: Int = 0,
+
+    @DatabaseField(columnName = "ore_xp")
+    var oreXp: Int = 0,
+
+    @DatabaseField(columnName = "skill_states", defaultValue = "{}")
+    var skillStates: String = "{}",
 
     @DatabaseField
-    var level: Int = 0,
-
-    @DatabaseField
-    var xp: Int = 0
+    var mana: Int = 0
 )

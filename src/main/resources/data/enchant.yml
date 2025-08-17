@@ -2,9 +2,7 @@ enchants:
   minecraft:(stone|iron|diamond)_pickaxe:
     minecraft:efficiency: 40
     minecraft:unbreaking: 100
-    ex:area_mining: 10
-    ex:multi_drop: 10
 
-  minecraft:leather_helmet:
+  minecraft:skeleton_skull:
     ex:night_vision: 40
     ex:flight: 10

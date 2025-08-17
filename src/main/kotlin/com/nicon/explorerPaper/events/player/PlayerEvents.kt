@@ -1,15 +1,16 @@
 package com.nicon.explorerPaper.events.player
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
-import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.nicon.explorerPaper.Main
 import com.nicon.explorerPaper.definitions.InventoryUIDefinitions
 import com.nicon.explorerPaper.definitions.ItemDefinitions
-import com.nicon.explorerPaper.definitions.MiscConstants
+import com.nicon.explorerPaper.definitions.Constants
 import com.nicon.explorerPaper.utils.GameUtils
+import com.nicon.explorerPaper.utils.ItemUtils
 import com.nicon.explorerPaper.utils.PlayerUtils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -44,9 +45,6 @@ class PlayerEvents : Listener {
         PlayerUtils.clearItems(player, Material.COMPASS.key.toString())
         player.inventory.addItem(ItemDefinitions.getMenuItem())
 
-        PlayerUtils.refreshSidebar(player)
-        PlayerUtils.refreshBossBar(player)
-
         if (!player.hasPlayedBefore()) {
             PlayerUtils.clearItems(player, Material.WOODEN_PICKAXE.key.toString())
             PlayerUtils.clearItems(player, Material.WOODEN_SHOVEL.key.toString())
@@ -62,11 +60,11 @@ class PlayerEvents : Listener {
 
         for (slot in 0..<player.inventory.size) {
             val itemStack = player.inventory.getItem(slot) ?: continue
-            val detailedItemStack = GameUtils.setItemDetail(itemStack)
-            player.inventory.setItem(slot, detailedItemStack)
+            player.inventory.setItem(slot, itemStack)
         }
 
-        PlayerUtils.refreshRecipeUnlock(player)
+        PlayerUtils.refreshLevelUnlockRecipe(player)
+        PlayerUtils.refreshSidebar(player)
     }
 
     @EventHandler
@@ -79,6 +77,7 @@ class PlayerEvents : Listener {
         )
 
         PlayerUtils.expBossBars.remove(event.player.uniqueId)
+        PlayerUtils.manaBossBars.remove(event.player.uniqueId)
     }
 
     @EventHandler
@@ -89,11 +88,11 @@ class PlayerEvents : Listener {
     }
 
     @EventHandler
-    fun onDropItem(event: PlayerDropItemEvent) {
+    fun onItemDrop(event: PlayerDropItemEvent) {
         val player = event.player
         if (player.gameMode == GameMode.CREATIVE) return
         val itemStack = event.itemDrop.itemStack
-        if (MiscConstants.DISABLED_DROP_ITEMS.contains(itemStack.type.key.toString())) {
+        if (Constants.DISABLED_DROP_ITEMS.contains(itemStack.type.key.toString())) {
             event.isCancelled = true
         }
     }
@@ -101,28 +100,42 @@ class PlayerEvents : Listener {
     @EventHandler
     fun onInteract(event: PlayerInteractEvent) {
         val player = event.player
+        val block = event.clickedBlock
         if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.RIGHT_CLICK_BLOCK) {
-            val itemId = player.inventory.getItem(EquipmentSlot.HAND).type.key.toString()
+            val handItem = player.inventory.getItem(EquipmentSlot.HAND)
+            val itemId = handItem.type.key.toString()
 
-            if (itemId == "minecraft:compass") {
-                InventoryUIDefinitions.openMenuUI(player)
+            when (itemId) {
+                "minecraft:compass" -> {
+                    InventoryUIDefinitions.openMenuUI(player)
+                }
+                "minecraft:chest" -> {
+                    val isExplorersChest = ItemUtils.getCustomTag(handItem, "explorersChest") == "true"
+                    if (isExplorersChest) {
+                        GameUtils.openLootChest(player, "ex:chests/explorers_chest", "探検家のチェスト")
+                    }
+                }
+            }
+
+            if (event.action == Action.RIGHT_CLICK_BLOCK && Constants.DISABLED_INTERACT_BLOCKS.contains(block?.type)) {
+                event.isCancelled = true
             }
         }
     }
 
     @EventHandler
-    fun onPlaceBlock(event: BlockPlaceEvent) {
+    fun onBlockPlace(event: BlockPlaceEvent) {
         val player = event.player
         if (player.gameMode == GameMode.CREATIVE) return
-        if (MiscConstants.ENABLED_PLACE_BLOCKS.contains(event.itemInHand.type.key.toString())) return
+        if (Constants.ENABLED_PLACE_BLOCKS.contains(event.itemInHand.type.key.toString())) return
         event.isCancelled = true
     }
 
     @EventHandler
-    fun onDamageItem(event: PlayerItemDamageEvent) {
+    fun onItemDamage(event: PlayerItemDamageEvent) {
         val itemId = event.item.type.key.toString()
 
-        if (MiscConstants.DISABLED_DURABILITY_ITEMS.contains(itemId)) {
+        if (Constants.DISABLED_DURABILITY_ITEMS.contains(itemId)) {
             event.isCancelled = true
         }
     }

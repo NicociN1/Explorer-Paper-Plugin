@@ -30,7 +30,10 @@ class ItemDefinitions {
          */
         fun getPlayerInfoIcon(player: Player): ItemStack {
             val gold = PlayerUtils.PlayerDatabase.getGold(player)
-            val level = PlayerUtils.PlayerDatabase.getLevel(player)
+            val landLevel = PlayerUtils.getTypeLevel(player, PlayerUtils.LevelType.LAND)
+            val woodLevel = PlayerUtils.getTypeLevel(player, PlayerUtils.LevelType.WOOD)
+            val stoneLevel = PlayerUtils.getTypeLevel(player, PlayerUtils.LevelType.STONE)
+            val oreLevel = PlayerUtils.getTypeLevel(player, PlayerUtils.LevelType.ORE)
             val blocksMined = PlayerUtils.PlayerDatabase.getBlocksMined(player)
 
             val playerInfoIcon = ItemStack.of(Material.PLAYER_HEAD)
@@ -56,7 +59,25 @@ class ItemDefinitions {
                             .text()
                             .color(NamedTextColor.GREEN)
                             .decoration(TextDecoration.ITALIC, false)
-                            .content("レベル: $level")
+                            .content("整地レベル: $landLevel")
+                            .build(),
+                        Component
+                            .text()
+                            .color(NamedTextColor.GREEN)
+                            .decoration(TextDecoration.ITALIC, false)
+                            .content("伐採レベル: $woodLevel")
+                            .build(),
+                        Component
+                            .text()
+                            .color(NamedTextColor.GREEN)
+                            .decoration(TextDecoration.ITALIC, false)
+                            .content("採石レベル: $stoneLevel")
+                            .build(),
+                        Component
+                            .text()
+                            .color(NamedTextColor.GREEN)
+                            .decoration(TextDecoration.ITALIC, false)
+                            .content("鉱石採掘レベル: $oreLevel")
                             .build(),
                         Component
                             .text()

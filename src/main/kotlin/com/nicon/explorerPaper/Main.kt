@@ -10,6 +10,9 @@ import com.nicon.explorerPaper.items.ItemData.ItemDetail
 import com.nicon.explorerPaper.items.ItemManager
 import com.nicon.explorerPaper.recipes.RecipeData.RecipeDetail
 import com.nicon.explorerPaper.recipes.RecipeManager
+import com.nicon.explorerPaper.skills.SkillData.SkillDetail
+import com.nicon.explorerPaper.skills.SkillManager
+import com.nicon.explorerPaper.utils.PlayerUtils
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -25,6 +28,8 @@ class Main : JavaPlugin() {
             private set
         lateinit var enchantDetails: Map<String, Map<String, Int>>
             private set
+        lateinit var skillDetails: Map<PlayerUtils.LevelType, Array<SkillDetail>>
+            private set
     }
 
     override fun onEnable() {
@@ -39,6 +44,7 @@ class Main : JavaPlugin() {
         itemDetails = ItemManager.getDetails()
         recipeDetails = RecipeManager.getDetails()
         enchantDetails = EnchantManager.getDetails()
+        skillDetails = SkillManager.getDetails()
 
         val pluginManager = Bukkit.getPluginManager()
         pluginManager.registerEvents(PlayerEvents(), this)
@@ -46,6 +52,13 @@ class Main : JavaPlugin() {
         pluginManager.registerEvents(WorldEvents(), this)
 
         Database.init(dataFolder.absolutePath)
+
+        Bukkit.getScheduler().runTaskTimer(this, Runnable {
+            for (player in this.server.onlinePlayers) {
+                PlayerUtils.addMana(player, 10)
+                PlayerUtils.refreshManaBossBar(player)
+            }
+        }, 0L, 20L)
     }
 
     override fun onDisable() {

@@ -6,26 +6,20 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 object ItemUtils {
-    fun addCustomTag(item: ItemStack, keyName: String, value: String): ItemStack {
+    fun addCustomTag(item: ItemStack, keyName: String, value: String) {
         val key = NamespacedKey(Main.instance, keyName)
 
-        val clonedItem = item.clone()
-        clonedItem.editMeta { meta ->
+        item.editMeta { meta ->
             meta?.persistentDataContainer?.set(key, PersistentDataType.STRING, value)
         }
-
-        return clonedItem
     }
 
-    fun removeCustomTag(item: ItemStack, keyName: String): ItemStack {
+    fun removeCustomTag(item: ItemStack, keyName: String) {
         val key = NamespacedKey(Main.instance, keyName)
 
-        val clonedItem = item.clone()
-        clonedItem.editMeta { meta ->
+        item.editMeta { meta ->
             meta?.persistentDataContainer?.remove(key)
         }
-
-        return clonedItem
     }
 
     fun getCustomTag(item: ItemStack, keyName: String): String? {

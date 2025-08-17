@@ -6,11 +6,12 @@ class RecipeData {
     constructor()
 
     class RecipeDetail {
-        var id: String = ""
+        var tag: String = ""
         var requireItems: Array<InputItem> = arrayOf()
         var outputItem: OutputItem = OutputItem()
         var unlockCondition: String = ""
         var goldCost: Int = 0
+        var name: String = ""
 
         constructor()
 
