@@ -1,11 +1,10 @@
 package com.nicon.explorerPaper.utils
 
-import Players
-import com.nicon.explorerPaper.Database
 import com.nicon.explorerPaper.Main
+import com.nicon.explorerPaper.definitions.Constants
+import com.nicon.explorerPaper.skills.SkillData.SkillDetail
 import io.papermc.paper.registry.RegistryAccess
 import io.papermc.paper.registry.RegistryKey
-import kotlinx.serialization.json.Json
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -22,12 +21,10 @@ import org.bukkit.loot.LootContext
 import org.bukkit.scoreboard.Criteria
 import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
-import java.lang.Math.round
 import java.util.Random
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.pow
 import kotlin.math.roundToInt
 
 object PlayerUtils {
@@ -62,6 +59,21 @@ object PlayerUtils {
     }
 
     /**
+     * 手に持っているアイテムを減らす
+     */
+    fun clearHandItems(player: Player, amount: Int? = null) {
+        val inventory = player.inventory
+        val handItem = inventory.itemInMainHand
+
+        if (amount != null) {
+            handItem.amount = max(handItem.amount - amount, 0)
+            inventory.setItemInMainHand(handItem)
+        } else {
+            inventory.setItemInMainHand(ItemStack.empty())
+        }
+    }
+
+    /**
      * アイテムを持っている量を取得
      */
     fun getItemAmount(player: Player, id: String): Int {
@@ -76,225 +88,21 @@ object PlayerUtils {
         return amountCount
     }
 
-    object PlayerDatabase {
-        fun createIfNotExists(player: Player) {
-            Database.playerDao.createIfNotExists(Players(
-                player.uniqueId.toString(),
-                player.name
-            ))
-        }
-
-        fun getGold(player: Player): Int? {
-            val playerData = Database.playerDao.queryForId(player.uniqueId.toString())
-            return playerData?.gold
-        }
-
-        fun setGold(player: Player, gold: Int) {
-            createIfNotExists(player)
-
-            val updateBuilder = Database.playerDao.updateBuilder()
-            updateBuilder.updateColumnValue("gold", gold)
-            updateBuilder.where().eq("uuid", player.uniqueId.toString())
-            updateBuilder.update()
-        }
-
-        fun getBlocksMined(player: Player): Int? {
-            val playerData = Database.playerDao.queryForId(player.uniqueId.toString())
-            return playerData?.blocksMined
-        }
-
-        fun setBlocksMined(player: Player, blocksMined: Int) {
-            createIfNotExists(player)
-
-            val updateBuilder = Database.playerDao.updateBuilder()
-            updateBuilder.updateColumnValue("blocks_mined", blocksMined)
-            updateBuilder.where().eq("uuid", player.uniqueId.toString())
-            updateBuilder.update()
-        }
-
-        fun getUnlockedRecipeTags(player: Player): MutableList<String> {
-            val playerData = Database.playerDao.queryForId(player.uniqueId.toString()) ?: return mutableListOf()
-            val unlockedRecipes = Json.decodeFromString<MutableList<String>>(playerData.unlockedRecipeTags)
-
-            return unlockedRecipes
-        }
-
-        fun setUnlockedRecipeTags(player: Player, unlockedRecipeTags: MutableList<String>) {
-            createIfNotExists(player)
-
-            val unlockedRecipeTagsTxt = Json.encodeToString(unlockedRecipeTags)
-
-            val updateBuilder = Database.playerDao.updateBuilder()
-            updateBuilder.updateColumnValue("unlocked_recipe_tags", unlockedRecipeTagsTxt)
-            updateBuilder.where().eq("uuid", player.uniqueId.toString())
-            updateBuilder.update()
-        }
-
-        fun getSkillStates(player: Player): MutableMap<String, String> {
-            val playerData = Database.playerDao.queryForId(player.uniqueId.toString()) ?: return mutableMapOf()
-            val unlockedRecipes = Json.decodeFromString<MutableMap<String, String>>(playerData.skillStates)
-
-            return unlockedRecipes
-        }
-
-        fun setSkillStates(player: Player, skillStates: MutableMap<String, String>) {
-            createIfNotExists(player)
-
-            val skillStatesTxt = Json.encodeToString(skillStates)
-
-            val updateBuilder = Database.playerDao.updateBuilder()
-            updateBuilder.updateColumnValue("skill_states", skillStatesTxt)
-            updateBuilder.where().eq("uuid", player.uniqueId.toString())
-            updateBuilder.update()
-        }
-
-        object Level {
-            fun getLandLevel(player: Player): Int {
-                val playerData = Database.playerDao.queryForId(player.uniqueId.toString())
-                return playerData?.landLevel ?: 0
-            }
-            fun setLandLevel(player: Player, level: Int) {
-                createIfNotExists(player)
-
-                val updateBuilder = Database.playerDao.updateBuilder()
-                updateBuilder.updateColumnValue("land_level", level)
-                updateBuilder.where().eq("uuid", player.uniqueId.toString())
-                updateBuilder.update()
-            }
-            fun getLandXp(player: Player): Int {
-                val playerData = Database.playerDao.queryForId(player.uniqueId.toString())
-                return playerData?.landXp ?: 0
-            }
-            fun setLandXp(player: Player, xp: Int) {
-                createIfNotExists(player)
-
-                val updateBuilder = Database.playerDao.updateBuilder()
-                updateBuilder.updateColumnValue("land_xp", xp)
-                updateBuilder.where().eq("uuid", player.uniqueId.toString())
-                updateBuilder.update()
-            }
-
-            fun getWoodLevel(player: Player): Int {
-                val playerData = Database.playerDao.queryForId(player.uniqueId.toString())
-                return playerData?.woodLevel ?: 0
-            }
-            fun setWoodLevel(player: Player, level: Int) {
-                createIfNotExists(player)
-
-                val updateBuilder = Database.playerDao.updateBuilder()
-                updateBuilder.updateColumnValue("wood_level", level)
-                updateBuilder.where().eq("uuid", player.uniqueId.toString())
-                updateBuilder.update()
-            }
-            fun getWoodXp(player: Player): Int {
-                val playerData = Database.playerDao.queryForId(player.uniqueId.toString())
-                return playerData?.woodXp ?: 0
-            }
-            fun setWoodXp(player: Player, xp: Int) {
-                createIfNotExists(player)
-
-                val updateBuilder = Database.playerDao.updateBuilder()
-                updateBuilder.updateColumnValue("wood_xp", xp)
-                updateBuilder.where().eq("uuid", player.uniqueId.toString())
-                updateBuilder.update()
-            }
-
-            fun getStoneLevel(player: Player): Int {
-                val playerData = Database.playerDao.queryForId(player.uniqueId.toString())
-                return playerData?.stoneLevel ?: 0
-            }
-            fun setStoneLevel(player: Player, level: Int) {
-                createIfNotExists(player)
-
-                val updateBuilder = Database.playerDao.updateBuilder()
-                updateBuilder.updateColumnValue("stone_level", level)
-                updateBuilder.where().eq("uuid", player.uniqueId.toString())
-                updateBuilder.update()
-            }
-            fun getStoneXp(player: Player): Int {
-                val playerData = Database.playerDao.queryForId(player.uniqueId.toString())
-                return playerData?.stoneXp ?: 0
-            }
-            fun setStoneXp(player: Player, xp: Int) {
-                createIfNotExists(player)
-
-                val updateBuilder = Database.playerDao.updateBuilder()
-                updateBuilder.updateColumnValue("stone_xp", xp)
-                updateBuilder.where().eq("uuid", player.uniqueId.toString())
-                updateBuilder.update()
-            }
-
-            fun getOreLevel(player: Player): Int {
-                val playerData = Database.playerDao.queryForId(player.uniqueId.toString())
-                return playerData?.oreLevel ?: 0
-            }
-            fun setOreLevel(player: Player, level: Int) {
-                createIfNotExists(player)
-
-                val updateBuilder = Database.playerDao.updateBuilder()
-                updateBuilder.updateColumnValue("ore_level", level)
-                updateBuilder.where().eq("uuid", player.uniqueId.toString())
-                updateBuilder.update()
-            }
-            fun getOreXp(player: Player): Int {
-                val playerData = Database.playerDao.queryForId(player.uniqueId.toString())
-                return playerData?.oreXp ?: 0
-            }
-            fun setOreXp(player: Player, xp: Int) {
-                createIfNotExists(player)
-
-                val updateBuilder = Database.playerDao.updateBuilder()
-                updateBuilder.updateColumnValue("ore_xp", xp)
-                updateBuilder.where().eq("uuid", player.uniqueId.toString())
-                updateBuilder.update()
-            }
-        }
-
-        fun getAmethyst(player: Player): Int? {
-            val playerData = Database.playerDao.queryForId(player.uniqueId.toString())
-            return playerData?.amethyst
-        }
-
-        fun setAmethyst(player: Player, amethyst: Int) {
-            createIfNotExists(player)
-
-            val updateBuilder = Database.playerDao.updateBuilder()
-            updateBuilder.updateColumnValue("amethyst", amethyst)
-            updateBuilder.where().eq("uuid", player.uniqueId.toString())
-            updateBuilder.update()
-        }
-
-        fun getMana(player: Player): Int? {
-            val playerData = Database.playerDao.queryForId(player.uniqueId.toString())
-            return playerData?.mana
-        }
-
-        fun setMana(player: Player, mana: Int) {
-            createIfNotExists(player)
-
-            val updateBuilder = Database.playerDao.updateBuilder()
-            updateBuilder.updateColumnValue("mana", mana)
-            updateBuilder.where().eq("uuid", player.uniqueId.toString())
-            updateBuilder.update()
-        }
-    }
-
     /**
      * サイドバーを更新
      */
     fun refreshSidebar(player: Player) {
         val board = player.scoreboard
 
-        val objective: Objective = board.getObjective("sidebar") ?:
-            board.registerNewObjective(
-                "sidebar",
-                Criteria.DUMMY,
-                Component
-                    .text()
-                    .decoration(TextDecoration.BOLD, true)
-                    .content("<Explorer Server>")
-                    .build(),
-            )
+        val objective: Objective = board.getObjective("sidebar") ?: board.registerNewObjective(
+            "sidebar",
+            Criteria.DUMMY,
+            Component
+                .text()
+                .decoration(TextDecoration.BOLD, true)
+                .content("<Explorer Server>")
+                .build(),
+        )
 
         if (objective.displaySlot != DisplaySlot.SIDEBAR) {
             objective.displaySlot = DisplaySlot.SIDEBAR
@@ -306,7 +114,7 @@ object PlayerUtils {
             Component
                 .text()
                 .color(NamedTextColor.GOLD)
-                .content("Gold: ${Utils.addCommaToNumber(PlayerDatabase.getGold(player) ?: 0)}")
+                .content("Gold: ${Utils.addCommaToNumber(PD.getGold(player) ?: 0)}")
                 .build()
         )
 
@@ -316,7 +124,7 @@ object PlayerUtils {
             Component
                 .text()
                 .color(NamedTextColor.LIGHT_PURPLE)
-                .content("Amethyst: ${Utils.addCommaToNumber(PlayerDatabase.getAmethyst(player) ?: 0)}")
+                .content("Amethyst: ${Utils.addCommaToNumber(PD.getAmethyst(player) ?: 0)}")
                 .build()
         )
 
@@ -326,7 +134,7 @@ object PlayerUtils {
             Component
                 .text()
                 .color(NamedTextColor.WHITE)
-                .content("累計採掘回数: ${Utils.addCommaToNumber(PlayerDatabase.getBlocksMined(player) ?: 0)}")
+                .content("累計採掘回数: ${Utils.addCommaToNumber(PD.getBlocksMined(player) ?: 0)}")
                 .build()
         )
 
@@ -337,10 +145,10 @@ object PlayerUtils {
      * レシピを解放させる
      */
     fun unlockRecipe(player: Player, recipeTag: String) {
-        val unlockedRecipes = PlayerDatabase.getUnlockedRecipeTags(player)
+        val unlockedRecipes = PD.getUnlockedRecipeTags(player)
         if (unlockedRecipes.contains(recipeTag)) return
         unlockedRecipes.add(recipeTag)
-        PlayerDatabase.setUnlockedRecipeTags(player, unlockedRecipes)
+        PD.setUnlockedRecipeTags(player, unlockedRecipes)
 
         for (recipe in Main.recipeDetails) {
             if (recipe.tag != recipeTag) continue
@@ -364,6 +172,7 @@ object PlayerUtils {
     }
 
     val expBossBars = mutableMapOf<UUID, BossBar>()
+
     /**
      * ボスバーを更新
      */
@@ -379,10 +188,10 @@ object PlayerUtils {
             newBar
         }
 
-        val levelName = getLevelTypeName(levelType)
+        val levelName = getLevelTypeLabel(levelType)
 
-        val level = getTypeLevel(player, levelType)
-        val xp = getTypeXp(player, levelType)
+        val level = getLevelWithType(player, levelType)
+        val xp = getXpWithType(player, levelType)
         val requireXp = getExpToNextLevel(level)
         val xpProgress = (xp.toDouble() / requireXp).coerceIn(0.0, 1.0)
 
@@ -391,6 +200,7 @@ object PlayerUtils {
     }
 
     val manaBossBars = mutableMapOf<UUID, BossBar>()
+
     /**
      * ボスバーを更新
      */
@@ -405,8 +215,8 @@ object PlayerUtils {
             manaBossBars[player.uniqueId] = newBar
             newBar
         }
-        val maxMana = 1000
-        val currentMana = PlayerDatabase.getMana(player) ?: 0
+        val maxMana = PD.getMaxMana(player)
+        val currentMana = PD.getMana(player)
         val progress = (currentMana.toDouble() / maxMana).coerceIn(0.0, 1.0)
 
         manaBossBar.setTitle("マナ: ${currentMana}/${maxMana}")
@@ -414,114 +224,185 @@ object PlayerUtils {
     }
 
     fun getExpToNextLevel(level: Int): Int {
-        val base = 1.45
-        val initial = 20.0
-        return (initial * base.pow((level - 1).toDouble())).roundToInt()
-//        return 4
+        val initial = 80.0
+
+        if (level <= 1) {
+            return initial.toInt()
+        }
+
+        val multiplier = 1.2
+        var value = initial
+
+        for (i in 2..level) {
+            value *= multiplier
+        }
+
+        return value.roundToInt()
+//        return 10
     }
 
     fun addExp(player: Player, levelType: LevelType, exp: Int) {
-        val currentExp = getTypeXp(player, levelType)
-        setTypeXp(player, levelType, currentExp + exp)
+        val currentExp = getXpWithType(player, levelType)
+        setXpWithType(player, levelType, currentExp + exp)
         refreshLevel(player, levelType)
         refreshExpBossBar(player, levelType)
     }
 
-    fun getTypeLevel(player: Player, levelType: LevelType): Int {
+    fun getLevelWithType(player: Player, levelType: LevelType): Int {
         return when (levelType) {
             LevelType.LAND -> {
-                PlayerDatabase.Level.getLandLevel(player)
+                PD.Level.getLandLevel(player)
             }
+
             LevelType.WOOD -> {
-                PlayerDatabase.Level.getWoodLevel(player)
+                PD.Level.getWoodLevel(player)
             }
+
             LevelType.STONE -> {
-                PlayerDatabase.Level.getStoneLevel(player)
+                PD.Level.getStoneLevel(player)
             }
+
             LevelType.ORE -> {
-                PlayerDatabase.Level.getOreLevel(player)
+                PD.Level.getOreLevel(player)
             }
         }
     }
 
-    fun getTypeXp(player: Player, levelType: LevelType): Int {
+    fun getXpWithType(player: Player, levelType: LevelType): Int {
         return when (levelType) {
             LevelType.LAND -> {
-                PlayerDatabase.Level.getLandXp(player)
+                PD.Level.getLandXp(player)
             }
+
             LevelType.WOOD -> {
-                PlayerDatabase.Level.getWoodXp(player)
+                PD.Level.getWoodXp(player)
             }
+
             LevelType.STONE -> {
-                PlayerDatabase.Level.getStoneXp(player)
+                PD.Level.getStoneXp(player)
             }
+
             LevelType.ORE -> {
-                PlayerDatabase.Level.getOreXp(player)
+                PD.Level.getOreXp(player)
             }
         }
     }
 
-    fun setTypeLevel(player: Player, levelType: LevelType, level: Int) {
+    fun getLevelCapCountWithType(player: Player, levelType: LevelType): Int {
+        return when (levelType) {
+            LevelType.LAND -> {
+                PD.Level.getLandLevelCapCount(player)
+            }
+
+            LevelType.WOOD -> {
+                PD.Level.getWoodLevelCapCount(player)
+            }
+
+            LevelType.STONE -> {
+                PD.Level.getStoneLevelCapCount(player)
+            }
+
+            LevelType.ORE -> {
+                PD.Level.getOreLevelCapCount(player)
+            }
+        }
+    }
+
+    fun setLevelWithType(player: Player, levelType: LevelType, level: Int) {
         when (levelType) {
             LevelType.LAND -> {
-                PlayerDatabase.Level.setLandLevel(player, level)
+                PD.Level.setLandLevel(player, level)
             }
+
             LevelType.WOOD -> {
-                PlayerDatabase.Level.setWoodLevel(player, level)
+                PD.Level.setWoodLevel(player, level)
             }
+
             LevelType.STONE -> {
-                PlayerDatabase.Level.setStoneLevel(player, level)
+                PD.Level.setStoneLevel(player, level)
             }
+
             LevelType.ORE -> {
-                PlayerDatabase.Level.setOreLevel(player, level)
+                PD.Level.setOreLevel(player, level)
             }
         }
     }
 
-    fun setTypeXp(player: Player, levelType: LevelType, xp: Int) {
+    fun setXpWithType(player: Player, levelType: LevelType, xp: Int) {
         when (levelType) {
             LevelType.LAND -> {
-                PlayerDatabase.Level.setLandXp(player, xp)
+                PD.Level.setLandXp(player, xp)
             }
+
             LevelType.WOOD -> {
-                PlayerDatabase.Level.setWoodXp(player, xp)
+                PD.Level.setWoodXp(player, xp)
             }
+
             LevelType.STONE -> {
-                PlayerDatabase.Level.setStoneXp(player, xp)
+                PD.Level.setStoneXp(player, xp)
             }
+
             LevelType.ORE -> {
-                PlayerDatabase.Level.setOreXp(player, xp)
+                PD.Level.setOreXp(player, xp)
             }
         }
     }
 
-    fun getLevelTypeName(levelType: LevelType): String {
+    fun setLevelCapCountWithType(player: Player, levelType: LevelType, levelCap: Int) {
+        when (levelType) {
+            LevelType.LAND -> {
+                PD.Level.setLandLevelCapCount(player, levelCap)
+            }
+
+            LevelType.WOOD -> {
+                PD.Level.setWoodLevelCapCount(player, levelCap)
+            }
+
+            LevelType.STONE -> {
+                PD.Level.setStoneLevelCapCount(player, levelCap)
+            }
+
+            LevelType.ORE -> {
+                PD.Level.setOreLevelCapCount(player, levelCap)
+            }
+        }
+    }
+
+    fun getLevelTypeLabel(levelType: LevelType): String {
         return when (levelType) {
             LevelType.LAND -> {
-            "整地"
-        }
+                "整地"
+            }
+
             LevelType.WOOD -> {
-            "伐採"
-        }
+                "伐採"
+            }
+
             LevelType.STONE -> {
-            "採石"
-        }
+                "採石"
+            }
+
             LevelType.ORE -> {
-            "鉱石採掘"
-        }
+                "探鉱"
+            }
         }
     }
 
     fun refreshLevel(player: Player, levelType: LevelType) {
-        val xp = getTypeXp(player, levelType)
-        val level = getTypeLevel(player, levelType)
+
+        val xp = getXpWithType(player, levelType)
+        val level = getLevelWithType(player, levelType)
         val requireExp = getExpToNextLevel(level)
 
-        if (xp >= requireExp) {
-            setTypeLevel(player, levelType, level + 1)
-            setTypeXp(player, levelType, xp - requireExp)
+        val levelCapCount = getLevelCapCountWithType(player, levelType)
+        val levelCap = Main.levelCapDetails[levelType]?.getOrNull(levelCapCount - 1)?.level ?: Constants.initialLevelCap
+        if (level >= levelCap) return
 
-            val levelName = getLevelTypeName(levelType)
+        if (xp >= requireExp) {
+            setLevelWithType(player, levelType, level + 1)
+            setXpWithType(player, levelType, xp - requireExp)
+
+            val levelName = getLevelTypeLabel(levelType)
             player.sendMessage(
                 Component
                     .text()
@@ -530,6 +411,7 @@ object PlayerUtils {
                     .build()
             )
             player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f)
+            player.playSound(player.location, Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, 1f, 1f)
 
             player.server.broadcast(
                 Component
@@ -546,71 +428,80 @@ object PlayerUtils {
             val skills = Main.skillDetails[levelType]
             if (skills != null) {
                 for (skillDetail in skills) {
-                    for (skillLevel in skillDetail.skillLevels) {
+                    for (i in 0..<skillDetail.skillLevels.size) {
+                        val skillLevel = skillDetail.skillLevels[i]
                         if (level + 1 == skillLevel.unlockLevel) {
-                            unlockSkillMessage(player, skillDetail.name)
+                            onSkillUnlock(player, levelType, skillDetail, i + 1)
                         }
                     }
                 }
+            }
+
+            if (level + 1 >= levelCap) {
+                player.sendMessage(
+                    Component
+                        .text()
+                        .color(NamedTextColor.RED)
+                        .decoration(TextDecoration.BOLD, true)
+                        .content("レベルキャップに到達しました。レベルキャップを解放するまでレベルは上昇しません。レベルキャップの解放はメニューのレベルメニューから行うことができます。")
+                        .build()
+                )
             }
         }
     }
 
     fun refreshLevelUnlockRecipe(player: Player) {
-        val landLevel = getTypeLevel(player, LevelType.LAND)
-        val woodLevel = getTypeLevel(player, LevelType.WOOD)
-        val stoneLevel = getTypeLevel(player, LevelType.STONE)
-        val oreLevel = getTypeLevel(player, LevelType.ORE)
+        val landLevel = getLevelWithType(player, LevelType.LAND)
+        val woodLevel = getLevelWithType(player, LevelType.WOOD)
+        val stoneLevel = getLevelWithType(player, LevelType.STONE)
 
-        if (landLevel >= 5) {
-            unlockRecipe(player, "land_level_5")
+        if (landLevel >= 2) {
+            unlockRecipe(player, "land_level_2")
         }
-        if (landLevel >= 15) {
-            unlockRecipe(player, "land_level_15")
+        if (landLevel >= 10) {
+            unlockRecipe(player, "land_level_10")
         }
-        if (landLevel >= 25) {
-            unlockRecipe(player, "land_level_25")
-        }
-
-        if (woodLevel >= 5) {
-            unlockRecipe(player, "wood_level_5")
-        }
-        if (woodLevel >= 15) {
-            unlockRecipe(player, "wood_level_15")
-        }
-        if (woodLevel >= 25) {
-            unlockRecipe(player, "wood_level_25")
+        if (landLevel >= 20) {
+            unlockRecipe(player, "land_level_20")
         }
 
-        if (stoneLevel >= 5) {
-            unlockRecipe(player, "stone_level_5")
+        if (woodLevel >= 2) {
+            unlockRecipe(player, "wood_level_2")
         }
-        if (stoneLevel >= 15) {
-            unlockRecipe(player, "stone_level_15")
+        if (woodLevel >= 10) {
+            unlockRecipe(player, "wood_level_10")
         }
-        if (stoneLevel >= 25) {
-            unlockRecipe(player, "stone_level_25")
+        if (woodLevel >= 20) {
+            unlockRecipe(player, "wood_level_20")
         }
 
-        if (oreLevel >= 5) {
-            unlockRecipe(player, "ore_level_5")
+        if (stoneLevel >= 2) {
+            unlockRecipe(player, "stone_level_2")
         }
-        if (oreLevel >= 15) {
-            unlockRecipe(player, "ore_level_15")
+        if (stoneLevel >= 10) {
+            unlockRecipe(player, "stone_level_10")
         }
-        if (oreLevel >= 25) {
-            unlockRecipe(player, "ore_level_25")
+        if (stoneLevel >= 20) {
+            unlockRecipe(player, "stone_level_20")
         }
     }
 
-    private fun unlockSkillMessage(player: Player, skillName: String) {
+    private fun onSkillUnlock(player: Player, levelType: LevelType, skillDetail: SkillDetail, skillLevel: Int) {
+        val levelTypeName = getLevelTypeLabel(levelType)
         player.sendMessage(
             Component
                 .text()
                 .decoration(TextDecoration.BOLD, true)
                 .color(NamedTextColor.AQUA)
-                .content("スキル [$skillName] が解放されました！")
+                .content("${levelTypeName}スキル [${skillDetail.name}] Lv.${skillLevel} が解放されました！")
         )
+        player.playSound(player.location, Sound.BLOCK_BEACON_POWER_SELECT, 1f, 1f)
+
+        val skill = skillDetail.skillLevels.getOrNull(skillLevel - 1) ?: return
+        if (skill.states == null) return
+        val skillStates = PD.getSkillStates(player)
+        skillStates[skillDetail.id] = skill.states!!.last()
+        PD.setSkillStates(player, skillStates)
     }
 
     fun safeAddItem(player: Player, itemStack: ItemStack) {
@@ -622,16 +513,19 @@ object PlayerUtils {
     }
 
     fun getEnchantLevel(itemStack: ItemStack, id: String): Int? {
-        val namespacedKey = NamespacedKey.fromString(id) ?: return  null
+        val namespacedKey = NamespacedKey.fromString(id) ?: return null
         val enchantment = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).get(namespacedKey)
         return itemStack.enchantments[enchantment]
     }
 
+    /**
+     * @return 指定されたskillIdのスキルが見つからなかったらnull,解放されていなければ0を返す
+     */
     fun getSkillLevel(player: Player, levelType: LevelType, skillId: String): Int? {
-        val level = getTypeLevel(player, levelType)
+        val level = getLevelWithType(player, levelType)
         val skillDetail = Main.skillDetails[levelType] ?: return null
-        val skill = skillDetail.firstOrNull { detail ->  detail.id == skillId} ?: return null
-        val skillLevel = skill.skillLevels.indexOfLast{ skillLevel ->
+        val skill = skillDetail.firstOrNull { detail -> detail.id == skillId } ?: return null
+        val skillLevel = skill.skillLevels.indexOfLast { skillLevel ->
             level >= skillLevel.unlockLevel
         } + 1
         return skillLevel
@@ -645,10 +539,14 @@ object PlayerUtils {
         return loottable.populateLoot(Random(), lootContext)
     }
 
+    /**
+     * @param player 追加するプレイヤー
+     * @param value 追加する値
+     */
     fun addMana(player: Player, value: Int) {
-        val mana = PlayerDatabase.getMana(player) ?: 0
-        val addedMana = max(min(mana + value, 1000), 0)
-        PlayerDatabase.setMana(player, addedMana)
+        val mana = PD.getMana(player)
+        val addedMana = max(mana + value, 0)
+        PD.setMana(player, addedMana)
         refreshManaBossBar(player)
     }
 }

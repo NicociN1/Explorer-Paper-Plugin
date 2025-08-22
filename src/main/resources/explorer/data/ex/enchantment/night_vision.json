@@ -15,6 +15,6 @@
   "slots": [
     "head"
   ],
-  "supported_items": "#minecraft:enchantable/head_armor",
+  "supported_items": "minecraft:skeleton_skull",
   "weight": 40
 }

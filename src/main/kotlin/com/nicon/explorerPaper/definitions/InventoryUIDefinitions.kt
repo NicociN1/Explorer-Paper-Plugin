@@ -8,6 +8,7 @@ import com.nicon.explorerPaper.utils.GameUtils
 import com.nicon.explorerPaper.utils.InventoryUI
 import com.nicon.explorerPaper.utils.InventoryUI.Page
 import com.nicon.explorerPaper.utils.InventoryUI.UISlot
+import com.nicon.explorerPaper.utils.PD
 import com.nicon.explorerPaper.utils.PlayerUtils
 import com.nicon.explorerPaper.utils.Utils
 import net.kyori.adventure.text.Component
@@ -194,9 +195,33 @@ class InventoryUIDefinitions {
                         .build()
                 ))
             }
+            val storagesIcon = ItemStack.of(Material.CHEST)
+            storagesIcon.editMeta { meta ->
+                meta.displayName(
+                    Component.text()
+                        .decoration(TextDecoration.ITALIC, false)
+                        .decoration(TextDecoration.BOLD, true)
+                        .content("アイテム保管庫")
+                        .build()
+                )
+                meta.lore(listOf(
+                    Component
+                        .text()
+                        .decoration(TextDecoration.ITALIC, false)
+                        .color(NamedTextColor.WHITE)
+                        .content("アイテムを追加で保有できるようになる保管庫")
+                        .build(),
+                    Component
+                        .text()
+                        .decoration(TextDecoration.ITALIC, true)
+                        .color(NamedTextColor.GRAY)
+                        .content("Click Here!")
+                        .build()
+                ))
+            }
             val homePage = Page()
                 .lockEmptySlots()
-                .button(11, UISlot(teleportIcon) {
+                .button(16, UISlot(teleportIcon) {
                     player.playSound(player.location, Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f)
 
                     val randomTeleportIcon = ItemStack.of(Material.ENDER_EYE)
@@ -246,12 +271,12 @@ class InventoryUIDefinitions {
                         })
                     inventoryUI.pushPage(teleportPage)
                 })
-                .button(13, UISlot(craftIcon) {
+                .button(40, UISlot(craftIcon) {
                     player.playSound(player.location, Sound.BLOCK_CHEST_OPEN, 1f, 1f)
 
                     CraftScreen.openRecipeList(player, inventoryUI, 0)
                 })
-                .button(15, UISlot(sellIcon) {
+                .button(42, UISlot(sellIcon) {
                     player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f)
 
                     val doSellIcon = ItemStack.of(Material.GOLD_INGOT)
@@ -287,8 +312,8 @@ class InventoryUIDefinitions {
                                     inventoryUI.inventory.setItem(slot, ItemStack.empty())
 
                                     val sellPrice = itemDetail.sellPrice * itemStack.amount
-                                    val currentGold = PlayerUtils.PlayerDatabase.getGold(player) ?: 0
-                                    PlayerUtils.PlayerDatabase.setGold(player, currentGold + sellPrice)
+                                    val currentGold = PD.getGold(player)
+                                    PD.setGold(player, currentGold + sellPrice)
                                 }
 
                                 PlayerUtils.refreshSidebar(player)
@@ -320,10 +345,10 @@ class InventoryUIDefinitions {
 
                     inventoryUI.pushPage(sellPage)
                 })
-                .button(22, UISlot(ItemDefinitions.getPlayerInfoIcon(player)) {
+                .button(22, UISlot(ItemDefinitions.getPlayerInfoIcon(player, true)) {
                     SkillScreen.openLevelsMenu(inventoryUI, player)
                 })
-                .button(29, UISlot(initialToolsIcon) {
+                .button(53, UISlot(initialToolsIcon) {
                     player.playSound(player.location, Sound.BLOCK_STONE_BREAK, 1f, 1f)
                     PlayerUtils.clearItems(player, Material.WOODEN_PICKAXE.key.toString())
                     PlayerUtils.clearItems(player, Material.WOODEN_SHOVEL.key.toString())
@@ -336,10 +361,10 @@ class InventoryUIDefinitions {
                     player.inventory.addItem(woodenAxe)
                     player.inventory.addItem(woodenShovel)
                 })
-                .button(31, UISlot(enchantIcon) {
+                .button(38, UISlot(enchantIcon) {
                     EnchantScreen.openEnchantMenu(inventoryUI, player)
                 })
-                .button(33, UISlot(trashBoxIcon) {
+                .button(45, UISlot(trashBoxIcon) {
                     player.playSound(player.location, Sound.BLOCK_COMPOSTER_FILL, 1f, 1f)
 
                     val itemsTrashIcon = ItemStack.of(Material.BONE_MEAL)
@@ -370,6 +395,9 @@ class InventoryUIDefinitions {
                             }
                         })
                     inventoryUI.pushPage(trashPage)
+                })
+                .button(10, UISlot(storagesIcon) {
+                    StorageScreen.openStorageList(inventoryUI, player)
                 })
 
             inventoryUI.replacePage(homePage)

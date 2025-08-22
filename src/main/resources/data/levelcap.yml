@@ -1,0 +1,344 @@
+levelCaps:
+  LAND:
+    - level: 29
+      requireGold: 1000
+      requireItems:
+        - id: "minecraft:dirt"
+          label: "土"
+          amount: 64
+        - id: "minecraft:copper_ingot"
+          label: "銅のインゴット"
+          amount: 16
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 16
+    - level: 39
+      requireGold: 30000
+      requireItems:
+        - id: "minecraft:dirt"
+          label: "土"
+          amount: 384
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 64
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 8
+    - level: 49
+      requireGold: 100000
+      requireItems:
+        - id: "minecraft:dirt"
+          label: "土"
+          amount: 576
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 256
+        - id: "minecraft:redstone"
+          label: "レッドストーン"
+          amount: 16
+        - id: "minecraft:lapis_lazuli"
+          label: "ラピスラズリ"
+          amount: 16
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 16
+    - level: 59
+      requireGold: 300000
+      requireItems:
+        - id: "minecraft:dirt"
+          label: "土"
+          amount: 576
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 256
+        - id: "minecraft:redstone"
+          label: "レッドストーン"
+          amount: 32
+        - id: "minecraft:lapis_lazuli"
+          label: "ラピスラズリ"
+          amount: 32
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 32
+        - id: "minecraft:diamond"
+          label: "ダイヤモンド"
+          amount: 16
+    - level: 60
+      requireGold: 600000
+      requireItems:
+        - id: "minecraft:dirt"
+          label: "土"
+          amount: 576
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 256
+        - id: "minecraft:redstone"
+          label: "レッドストーン"
+          amount: 64
+        - id: "minecraft:lapis_lazuli"
+          label: "ラピスラズリ"
+          amount: 64
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 64
+        - id: "minecraft:diamond"
+          label: "ダイヤモンド"
+          amount: 32
+
+  WOOD:
+    - level: 29
+      requireGold: 1000
+      requireItems:
+        - id: "minecraft:oak_log"
+          label: "オークの原木"
+          amount: 64
+        - id: "minecraft:copper_ingot"
+          label: "銅のインゴット"
+          amount: 16
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 16
+    - level: 39
+      requireGold: 30000
+      requireItems:
+        - id: "minecraft:oak_log"
+          label: "オークの原木"
+          amount: 384
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 64
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 8
+    - level: 49
+      requireGold: 100000
+      requireItems:
+        - id: "minecraft:oak_log"
+          label: "オークの原木"
+          amount: 576
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 256
+        - id: "minecraft:redstone"
+          label: "レッドストーン"
+          amount: 16
+        - id: "minecraft:lapis_lazuli"
+          label: "ラピスラズリ"
+          amount: 16
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 16
+    - level: 59
+      requireGold: 300000
+      requireItems:
+        - id: "minecraft:oak_log"
+          label: "オークの原木"
+          amount: 576
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 256
+        - id: "minecraft:redstone"
+          label: "レッドストーン"
+          amount: 32
+        - id: "minecraft:lapis_lazuli"
+          label: "ラピスラズリ"
+          amount: 32
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 32
+        - id: "minecraft:diamond"
+          label: "ダイヤモンド"
+          amount: 16
+    - level: 60
+      requireGold: 600000
+      requireItems:
+        - id: "minecraft:oak_log"
+          label: "オークの原木"
+          amount: 576
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 256
+        - id: "minecraft:redstone"
+          label: "レッドストーン"
+          amount: 64
+        - id: "minecraft:lapis_lazuli"
+          label: "ラピスラズリ"
+          amount: 64
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 64
+        - id: "minecraft:diamond"
+          label: "ダイヤモンド"
+          amount: 32
+
+  STONE:
+    - level: 29
+      requireGold: 1000
+      requireItems:
+        - id: "minecraft:cobblestone"
+          label: "丸石"
+          amount: 64
+        - id: "minecraft:copper_ingot"
+          label: "銅のインゴット"
+          amount: 16
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 16
+    - level: 39
+      requireGold: 30000
+      requireItems:
+        - id: "minecraft:cobblestone"
+          label: "丸石"
+          amount: 384
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 64
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 8
+    - level: 49
+      requireGold: 100000
+      requireItems:
+        - id: "minecraft:cobblestone"
+          label: "丸石"
+          amount: 576
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 256
+        - id: "minecraft:redstone"
+          label: "レッドストーン"
+          amount: 16
+        - id: "minecraft:lapis_lazuli"
+          label: "ラピスラズリ"
+          amount: 16
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 16
+    - level: 59
+      requireGold: 300000
+      requireItems:
+        - id: "minecraft:cobblestone"
+          label: "丸石"
+          amount: 576
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 256
+        - id: "minecraft:redstone"
+          label: "レッドストーン"
+          amount: 32
+        - id: "minecraft:lapis_lazuli"
+          label: "ラピスラズリ"
+          amount: 32
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 32
+        - id: "minecraft:diamond"
+          label: "ダイヤモンド"
+          amount: 16
+    - level: 60
+      requireGold: 600000
+      requireItems:
+        - id: "minecraft:cobblestone"
+          label: "丸石"
+          amount: 576
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 256
+        - id: "minecraft:redstone"
+          label: "レッドストーン"
+          amount: 64
+        - id: "minecraft:lapis_lazuli"
+          label: "ラピスラズリ"
+          amount: 64
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 64
+        - id: "minecraft:diamond"
+          label: "ダイヤモンド"
+          amount: 32
+
+  ORE:
+    - level: 29
+      requireGold: 1000
+      requireItems:
+        - id: "minecraft:coal"
+          label: "石炭"
+          amount: 16
+        - id: "minecraft:copper_ingot"
+          label: "銅のインゴット"
+          amount: 16
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 16
+    - level: 39
+      requireGold: 30000
+      requireItems:
+        - id: "minecraft:coal"
+          label: "石炭"
+          amount: 32
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 64
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 8
+    - level: 49
+      requireGold: 100000
+      requireItems:
+        - id: "minecraft:coal"
+          label: "石炭"
+          amount: 64
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 256
+        - id: "minecraft:redstone"
+          label: "レッドストーン"
+          amount: 16
+        - id: "minecraft:lapis_lazuli"
+          label: "ラピスラズリ"
+          amount: 16
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 16
+    - level: 59
+      requireGold: 300000
+      requireItems:
+        - id: "minecraft:coal"
+          label: "石炭"
+          amount: 128
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 256
+        - id: "minecraft:redstone"
+          label: "レッドストーン"
+          amount: 32
+        - id: "minecraft:lapis_lazuli"
+          label: "ラピスラズリ"
+          amount: 32
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 32
+        - id: "minecraft:diamond"
+          label: "ダイヤモンド"
+          amount: 16
+    - level: 60
+      requireGold: 600000
+      requireItems:
+        - id: "minecraft:coal"
+          label: "石炭"
+          amount: 256
+        - id: "minecraft:iron_ingot"
+          label: "鉄のインゴット"
+          amount: 256
+        - id: "minecraft:redstone"
+          label: "レッドストーン"
+          amount: 64
+        - id: "minecraft:lapis_lazuli"
+          label: "ラピスラズリ"
+          amount: 64
+        - id: "minecraft:gold_ingot"
+          label: "金のインゴット"
+          amount: 64
+        - id: "minecraft:diamond"
+          label: "ダイヤモンド"
+          amount: 32

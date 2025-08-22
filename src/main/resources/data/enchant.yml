@@ -1,8 +1,8 @@
 enchants:
-  minecraft:(stone|iron|diamond)_pickaxe:
+  minecraft:(stone|iron|diamond|netherite)_(pickaxe|axe|shovel):
     minecraft:efficiency: 40
     minecraft:unbreaking: 100
 
   minecraft:skeleton_skull:
-    ex:night_vision: 40
+    ex:night_vision: 20
     ex:flight: 10

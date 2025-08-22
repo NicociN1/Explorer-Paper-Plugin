@@ -6,6 +6,7 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
@@ -36,11 +37,13 @@ class InventoryUI : Listener {
         pageHistory.add(currentPage)
         replacePage(page)
     }
+
     fun backPage() {
         if (pageHistory.isEmpty()) return
         replacePage(pageHistory.last())
         pageHistory.removeLast()
     }
+
     fun replacePage(page: Page) {
         currentPage = page
         for (slot in 0..<inventory.size) {
@@ -65,16 +68,31 @@ class InventoryUI : Listener {
         var isLockedEmptySlot = false
             private set
 
+        var isSafeItems = true
+            private set
+
         fun button(slot: Int, uiSlot: UISlot): Page {
             uiSlots[slot] = uiSlot
             return this
         }
+
         fun lockEmptySlots(): Page {
             isLockedEmptySlot = true
             return this
         }
+
         fun unlockEmptySlots(): Page {
             isLockedEmptySlot = false
+            return this
+        }
+
+        fun releaseSafeItems(): Page {
+            isSafeItems = false
+            return this
+        }
+
+        fun safeItems(): Page {
+            isSafeItems = true
             return this
         }
 
@@ -91,27 +109,37 @@ class InventoryUI : Listener {
 
     @EventHandler
     fun onClickInventory(event: InventoryClickEvent) {
-        if (event.clickedInventory !== inventory) return
+        if (
+            event.clickedInventory === inventory ||
+            (event.action == InventoryAction.MOVE_TO_OTHER_INVENTORY && event.inventory === inventory)
+        ) {
+            val uiSlot = currentPage.uiSlots[event.rawSlot]
 
-        val uiSlot = currentPage.uiSlots[event.slot]
-        if (uiSlot != null) {
-            event.isCancelled = true
-            uiSlot.onClick.run()
-        } else if (currentPage.isLockedEmptySlot) {
-            event.isCancelled = true
+            when {
+                uiSlot != null -> {
+                    event.isCancelled = true
+                    uiSlot.onClick.run()
+                }
+                currentPage.isLockedEmptySlot -> {
+                    event.isCancelled = true
+                }
+            }
         }
 
-        currentPage.onClickHandler.run()
+        if (event.inventory === inventory) {
+            currentPage.onClickHandler.run()
+        }
     }
 
     @EventHandler
     fun onCloseInventory(event: InventoryCloseEvent) {
         if (event.inventory !== inventory) return
+        if (!currentPage.isSafeItems) return
 
         for (slot in 0..<inventory.size) {
             if (currentPage.uiSlots.keys.contains(slot)) continue
             val item = inventory.getItem(slot) ?: continue
-            player.inventory.addItem(item)
+            PlayerUtils.safeAddItem(player, item)
         }
     }
 }

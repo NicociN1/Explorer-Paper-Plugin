@@ -17,7 +17,6 @@ class SkillData {
 
         class SkillLevel {
             var unlockLevel: Int = 0
-            var manaCost: Int? = null
             var description: String = ""
             var states: Array<String>? = null
 

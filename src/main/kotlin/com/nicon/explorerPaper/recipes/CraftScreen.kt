@@ -6,6 +6,8 @@ import com.nicon.explorerPaper.recipes.RecipeData.RecipeDetail
 import com.nicon.explorerPaper.utils.InventoryUI
 import com.nicon.explorerPaper.utils.InventoryUI.Page
 import com.nicon.explorerPaper.utils.InventoryUI.UISlot
+import com.nicon.explorerPaper.utils.ItemUtils
+import com.nicon.explorerPaper.utils.PD
 import com.nicon.explorerPaper.utils.PlayerUtils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -32,7 +34,7 @@ object CraftScreen {
 
         val gridIcon = ItemDefinitions.getGridIcon()
 
-        val unlockedRecipes = PlayerUtils.PlayerDatabase.getUnlockedRecipeTags(player)
+        val unlockedRecipes = PD.getUnlockedRecipeTags(player)
 
         for (slot in fromIndex..min(toIndex, recipeDetails.size - 1)) {
             val recipeDetail = recipeDetails[slot]
@@ -87,19 +89,7 @@ object CraftScreen {
         for (slot in 45..<54) {
             when (slot) {
                 45 -> {
-                    val backPageIcon = ItemStack.of(Material.COMPASS)
-                    backPageIcon.editMeta { meta ->
-                        meta.displayName(
-                            Component
-                                .text()
-                                .decoration(TextDecoration.BOLD, true)
-                                .decoration(TextDecoration.ITALIC, false)
-                                .content("ホームに戻る")
-                                .build()
-                        )
-                    }
-
-                    recipeListPage.button(slot, UISlot(backPageIcon) {
+                    recipeListPage.button(slot, UISlot(ItemDefinitions.getBackMainMenu()) {
                         inventoryUI.backPage()
                     })
                 }
@@ -205,16 +195,23 @@ object CraftScreen {
                         val outputMaterial = Material.matchMaterial(recipeDetail.outputItem.id) ?: return@UISlot
                         val itemStack = ItemStack.of(outputMaterial, recipeDetail.outputItem.amount)
 
+
                         if (recipeDetail.outputItem.properties != null) {
+                            val properties = recipeDetail.outputItem.properties!!
                             itemStack.editMeta { meta ->
-                                if (recipeDetail.outputItem.properties!!.customName != null) {
+                                if (properties.customName != null) {
                                     meta.displayName(
                                         Component
                                             .text()
                                             .decoration(TextDecoration.ITALIC, false)
-                                            .content(recipeDetail.outputItem.properties!!.customName!!)
+                                            .content(properties.customName!!)
                                             .build()
                                     )
+                                }
+                            }
+                            if (properties.customTags != null) {
+                                for (tag in properties.customTags) {
+                                    ItemUtils.addCustomTag(itemStack, tag.key, tag.value)
                                 }
                             }
                         }
@@ -223,8 +220,8 @@ object CraftScreen {
 
                         player.playSound(player.location, Sound.BLOCK_ANVIL_USE, 1f, 1f)
 
-                        val gold = PlayerUtils.PlayerDatabase.getGold(player) ?: 0
-                        PlayerUtils.PlayerDatabase.setGold(player, gold - recipeDetail.goldCost)
+                        val gold = PD.getGold(player) ?: 0
+                        PD.setGold(player, gold - recipeDetail.goldCost)
                         PlayerUtils.refreshSidebar(player)
 
                         openCraft(player, inventoryUI, recipeDetail, true)
@@ -307,7 +304,7 @@ object CraftScreen {
     }
 
     fun getIsUnlockedRecipe(player: Player, recipeDetail: RecipeDetail): Boolean {
-        val unlockedRecipes = PlayerUtils.PlayerDatabase.getUnlockedRecipeTags(player)
+        val unlockedRecipes = PD.getUnlockedRecipeTags(player)
         return unlockedRecipes.contains(recipeDetail.tag)
     }
 
@@ -327,7 +324,7 @@ object CraftScreen {
         }
 
         if (canCraft) {
-            val gold = PlayerUtils.PlayerDatabase.getGold(player) ?: 0
+            val gold = PD.getGold(player) ?: 0
             if (gold < recipeDetail.goldCost) {
                 canCraft = false
             }

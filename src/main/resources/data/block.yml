@@ -26,7 +26,7 @@ blocks:
       max: 15
   minecraft:oak_log:
     lootTable: "ex:blocks/oak_log"
-    xp: 4
+    xp: 6
     levelType: WOOD
     gold:
       chance: 0.1
@@ -39,7 +39,7 @@ blocks:
   minecraft:(deepslate_)?coal_ore:
     lootTable: "ex:blocks/coal_ore"
     smeltedLootTable: "ex:blocks/coal"
-    xp: 8
+    xp: 10
     levelType: ORE
     appropriateTools: "minecraft:(wooden|stone|iron|diamond)_pickaxe"
     gold:
@@ -49,7 +49,7 @@ blocks:
   minecraft:(deepslate_)?copper_ore:
     lootTable: "ex:blocks/copper_ore"
     smeltedLootTable: "ex:blocks/copper_ingot"
-    xp: 8
+    xp: 10
     levelType: ORE
     appropriateTools: "minecraft:(stone|iron|diamond)_pickaxe"
     gold:
@@ -59,7 +59,7 @@ blocks:
   minecraft:(deepslate_)?iron_ore:
     lootTable: "ex:blocks/iron_ore"
     smeltedLootTable: "ex:blocks/iron_ingot"
-    xp: 20
+    xp: 16
     levelType: ORE
     appropriateTools: "minecraft:(stone|iron|diamond)_pickaxe"
     gold:
@@ -69,7 +69,7 @@ blocks:
   minecraft:(deepslate_)?redstone_ore:
     lootTable: "ex:blocks/redstone_ore"
     smeltedLootTable: "ex:blocks/redstone"
-    xp: 40
+    xp: 30
     levelType: ORE
     appropriateTools: "minecraft:(iron|diamond)_pickaxe"
     gold:
@@ -79,7 +79,7 @@ blocks:
   minecraft:(deepslate_)?lapis_ore:
     lootTable: "ex:blocks/lapis_ore"
     smeltedLootTable: "ex:blocks/lapis_lazuli"
-    xp: 40
+    xp: 30
     levelType: ORE
     appropriateTools: "minecraft:(iron|diamond)_pickaxe"
     gold:
@@ -89,7 +89,7 @@ blocks:
   minecraft:(deepslate_)?gold_ore:
     lootTable: "ex:blocks/gold_ore"
     smeltedLootTable: "ex:blocks/gold_ingot"
-    xp: 80
+    xp: 50
     levelType: ORE
     appropriateTools: "minecraft:(iron|diamond)_pickaxe"
     gold:
@@ -99,7 +99,7 @@ blocks:
   minecraft:(deepslate_)?diamond_ore:
     lootTable: "ex:blocks/diamond_ore"
     smeltedLootTable: "ex:blocks/diamond"
-    xp: 150
+    xp: 80
     levelType: ORE
     appropriateTools: "minecraft:(iron|diamond)_pickaxe"
     gold:
@@ -120,7 +120,7 @@ blocks:
       max: 100
 
   minecraft:(amethyst_block|budding_amethyst):
-    xp: 50
+    xp: 20
     levelType: ORE
     amethyst:
       chance: 0.3
@@ -128,7 +128,7 @@ blocks:
       max: 2
 
   minecraft:(large|medium|small)_amethyst_bud:
-    xp: 80
+    xp: 30
     levelType: ORE
     amethyst:
       chance: 1

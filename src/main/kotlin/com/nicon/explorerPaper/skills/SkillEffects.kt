@@ -1,14 +1,15 @@
 package com.nicon.explorerPaper.skills
 
-import com.nicon.explorerPaper.skills.SkillData.SkillDetail
+import com.nicon.explorerPaper.definitions.ItemDefinitions
 import com.nicon.explorerPaper.utils.GameUtils
-import com.nicon.explorerPaper.utils.ItemUtils
+import com.nicon.explorerPaper.utils.PD
 import com.nicon.explorerPaper.utils.PlayerUtils
 import com.nicon.explorerPaper.utils.PlayerUtils.LevelType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -19,30 +20,42 @@ import java.util.Random
 object SkillEffects {
     fun handleAreaMining(player: Player, block: Block) {
         val blockDetail = GameUtils.getBlockDetail(block) ?: return
-        val mana = PlayerUtils.PlayerDatabase.getMana(player) ?: 0
 
         when (blockDetail.levelType) {
             LevelType.LAND -> {
-                val miningLevel = PlayerUtils.getSkillLevel(player, blockDetail.levelType!!, "land_area_mining")
-                val miningState = PlayerUtils.PlayerDatabase.getSkillStates(player)["land_area_mining"]
+                val miningLevel = PlayerUtils.getSkillLevel(player, blockDetail.levelType!!, "land_area_mining") ?: return
+                val miningState = PD.getSkillStates(player)["land_area_mining"]
                 val skillDetail = GameUtils.getSkillDetail(blockDetail.levelType!!, "land_area_mining")
-                if (skillDetail != null) {
-                    when (miningLevel) {
-                        1 -> {
-                            if (miningState == "3x3" || miningState == null) {
-                                if (useMana(player, skillDetail, 0, mana)) {
-                                    GameUtils.areaMining(player, block, blockDetail.levelType!!, 3)
-                                }
+                if (skillDetail != null && !player.isSneaking) {
+                    when (miningState) {
+                        "1x2" -> {
+                            if (miningLevel >= 1) {
+                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 1, 2, 5)
                             }
                         }
-
-                        2 -> when (miningState) {
-                            "3x3" -> if (useMana(player, skillDetail, 0, mana)) {
-                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 3)
+                        "5x2" -> {
+                            if (miningLevel >= 2) {
+                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 5, 2, 5)
                             }
-                            
-                            null, "5x5" -> if (useMana(player, skillDetail, 1, mana)) {
-                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 5)
+                        }
+                        "7x3" -> {
+                            if (miningLevel >= 3) {
+                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 7, 3, 4)
+                            }
+                        }
+                        "9x3" -> {
+                            if (miningLevel >= 4) {
+                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 9, 3, 4)
+                            }
+                        }
+                        "11x4" -> {
+                            if (miningLevel >= 5) {
+                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 11, 4, 3)
+                            }
+                        }
+                        "13x4" -> {
+                            if (miningLevel >= 6) {
+                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 13, 4, 3)
                             }
                         }
                     }
@@ -50,32 +63,39 @@ object SkillEffects {
             }
 
             LevelType.WOOD -> {
-                val miningLevel = PlayerUtils.getSkillLevel(player, blockDetail.levelType!!, "wood_area_mining")
-                val miningState = PlayerUtils.PlayerDatabase.getSkillStates(player)["wood_area_mining"]
+                val miningLevel = PlayerUtils.getSkillLevel(player, blockDetail.levelType!!, "wood_area_mining") ?: return
+                val miningState = PD.getSkillStates(player)["wood_area_mining"]
                 val skillDetail = GameUtils.getSkillDetail(blockDetail.levelType!!, "wood_area_mining")
-                if (skillDetail != null) {
-                    when (miningLevel) {
-                        1 -> {
-                            if (miningState == "TRUNK_ONLY" || miningState == null) {
-                                if (useMana(player, skillDetail, 0, mana)) {
-                                    GameUtils.allMining(player, block, arrayOf(Material.OAK_LOG))
-                                }
+                if (skillDetail != null && !player.isSneaking) {
+                    when (miningState) {
+                        "x3" -> {
+                            if (miningLevel >= 1) {
+                                GameUtils.countMining(player, block, arrayOf(Material.OAK_LOG), 1, 5)
                             }
                         }
-
-                        2 -> {
-                            when (miningState) {
-                                "TRUNK_ONLY" -> {
-                                    if (useMana(player, skillDetail, 0, mana)) {
-                                        GameUtils.allMining(player, block, arrayOf(Material.OAK_LOG))
-                                    }
-                                }
-                                
-                                null, "WOOD_ALL" -> {
-                                    if (useMana(player, skillDetail, 1, mana)) {
-                                        GameUtils.allMining(player, block, arrayOf(Material.OAK_LOG, Material.OAK_LEAVES))
-                                    }
-                                }
+                        "x8" -> {
+                            if (miningLevel >= 2) {
+                                GameUtils.countMining(player, block, arrayOf(Material.OAK_LOG), 7, 5)
+                            }
+                        }
+                        "x16" -> {
+                            if (miningLevel >= 3) {
+                                GameUtils.countMining(player, block, arrayOf(Material.OAK_LOG), 15, 4)
+                            }
+                        }
+                        "x32" -> {
+                            if (miningLevel >= 4) {
+                                GameUtils.countMining(player, block, arrayOf(Material.OAK_LOG), 31, 4)
+                            }
+                        }
+                        "x64" -> {
+                            if (miningLevel >= 5) {
+                                GameUtils.countMining(player, block, arrayOf(Material.OAK_LOG), 63, 3)
+                            }
+                        }
+                        "x128" -> {
+                            if (miningLevel >= 6) {
+                                GameUtils.countMining(player, block, arrayOf(Material.OAK_LOG), 127, 3)
                             }
                         }
                     }
@@ -83,32 +103,39 @@ object SkillEffects {
             }
 
             LevelType.STONE -> {
-                val miningLevel = PlayerUtils.getSkillLevel(player, blockDetail.levelType!!, "stone_area_mining")
-                val miningState = PlayerUtils.PlayerDatabase.getSkillStates(player)["stone_area_mining"]
+                val miningLevel = PlayerUtils.getSkillLevel(player, blockDetail.levelType!!, "stone_area_mining") ?: return
+                val miningState = PD.getSkillStates(player)["stone_area_mining"]
                 val skillDetail = GameUtils.getSkillDetail(blockDetail.levelType!!, "stone_area_mining")
-                if (skillDetail != null) {
-                    when (miningLevel) {
-                        1 -> {
-                            if (miningState == "3x3" || miningState == null) {
-                                if (useMana(player, skillDetail, 0, mana)) {
-                                    GameUtils.areaMining(player, block, blockDetail.levelType!!, 3)
-                                }
+                if (skillDetail != null && !player.isSneaking) {
+                    when (miningState) {
+                        "1x2" -> {
+                            if (miningLevel >= 1) {
+                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 1, 2, 5)
                             }
                         }
-
-                        2 -> {
-                            when (miningState) {
-                                "3x3" -> {
-                                    if (useMana(player, skillDetail, 0, mana)) {
-                                        GameUtils.areaMining(player, block, blockDetail.levelType!!, 3)
-                                    }
-                                }
-                                
-                                null, "5x5" -> {
-                                    if (useMana(player, skillDetail, 1, mana)) {
-                                        GameUtils.areaMining(player, block, blockDetail.levelType!!, 5)
-                                    }
-                                }
+                        "3x3" -> {
+                            if (miningLevel >= 2) {
+                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 3, 3, 5)
+                            }
+                        }
+                        "5x5" -> {
+                            if (miningLevel >= 3) {
+                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 5, 5, 4)
+                            }
+                        }
+                        "7x7" -> {
+                            if (miningLevel >= 4) {
+                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 7, 7, 4)
+                            }
+                        }
+                        "9x9" -> {
+                            if (miningLevel >= 5) {
+                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 9, 9, 3)
+                            }
+                        }
+                        "11x11" -> {
+                            if (miningLevel >= 6) {
+                                GameUtils.areaMining(player, block, blockDetail.levelType!!, 11, 11, 3)
                             }
                         }
                     }
@@ -116,22 +143,34 @@ object SkillEffects {
             }
 
             LevelType.ORE -> {
-                val miningLevel = PlayerUtils.getSkillLevel(player, blockDetail.levelType!!, "ore_area_mining")
-                val miningState = PlayerUtils.PlayerDatabase.getSkillStates(player)["ore_area_mining"]
+                val miningLevel = PlayerUtils.getSkillLevel(player, blockDetail.levelType!!, "ore_area_mining") ?: return
+                val miningState = PD.getSkillStates(player)["ore_area_mining"]
                 val skillDetail = GameUtils.getSkillDetail(blockDetail.levelType!!, "ore_area_mining")
-                if (skillDetail != null) {
-                    if (miningState == "ACTIVE" || miningState == null) {
-                        when (miningLevel) {
-                            1 -> {
-                                if (useMana(player, skillDetail, 0, mana)) {
-                                    GameUtils.allMining(player, block, arrayOf(block.type), 12)
-                                }
+                if (skillDetail != null && !player.isSneaking) {
+                    when (miningState) {
+                        "x3" -> {
+                            if (miningLevel >= 1) {
+                                GameUtils.countMining(player, block, arrayOf(block.type), 2, 5)
                             }
-
-                            2 -> {
-                                if (useMana(player, skillDetail, 1, mana)) {
-                                    GameUtils.allMining(player, block, arrayOf(block.type))
-                                }
+                        }
+                        "x6" -> {
+                            if (miningLevel >= 2) {
+                                GameUtils.countMining(player, block, arrayOf(block.type), 5, 5)
+                            }
+                        }
+                        "x10" -> {
+                            if (miningLevel >= 3) {
+                                GameUtils.countMining(player, block, arrayOf(block.type), 9, 4)
+                            }
+                        }
+                        "x16" -> {
+                            if (miningLevel >= 4) {
+                                GameUtils.countMining(player, block, arrayOf(block.type), 15, 4)
+                            }
+                        }
+                        "x32" -> {
+                            if (miningLevel >= 5) {
+                                GameUtils.countMining(player, block, arrayOf(block.type), 31, 3)
                             }
                         }
                     }
@@ -148,128 +187,66 @@ object SkillEffects {
 
         when (blockDetail.levelType) {
             LevelType.LAND -> {
-                handleLoot(
-                    player,
-                    block,
-                    blockDetail.levelType!!,
-                    "land_drop_antiques",
-                    mapOf(1 to 0.01, 2 to 0.04)
-                ) { _, _ ->
-                    val itemStacks = PlayerUtils.populateLoot("ex:skills/antiques", block.location)
-                    if (itemStacks != null) {
-                        for (itemStack in itemStacks) {
-                            PlayerUtils.safeAddItem(player, itemStack)
+                val antiquesLevel = PlayerUtils.getSkillLevel(player, LevelType.LAND, "land_drop_antiques")
+                if (antiquesLevel != null && antiquesLevel >= 1) {
+                    val antiquesChance = 1.0 / 80.0
+                    if (Math.random() <= antiquesChance) {
+                        val itemStacks = PlayerUtils.populateLoot("ex:skills/antiques", block.location)
+                        if (itemStacks != null) {
+                            for (itemStack in itemStacks) {
+                                PlayerUtils.safeAddItem(player, itemStack)
+                            }
+                            onRareDrop(player, "骨董品", antiquesChance)
                         }
                     }
                 }
 
-
-                handleLoot(
-                    player,
-                    block,
-                    blockDetail.levelType!!,
-                    "land_drop_explorers_chest",
-                    mapOf(1 to 0.005, 2 to 0.02)
-                ) { _, _ ->
-                    val explorersChest = ItemStack.of(Material.CHEST)
-                    explorersChest.editMeta { meta ->
-                        meta.displayName(
-                            Component
-                                .text()
-                                .decoration(TextDecoration.ITALIC, false)
-                                .content("探検家のチェスト")
-                                .build()
-                        )
-                        meta.lore(
-                            listOf(
-                                Component
-                                    .text()
-                                    .decoration(TextDecoration.ITALIC, false)
-                                    .color(NamedTextColor.WHITE)
-                                    .content("手に持って右クリックで開封")
-                                    .build()
-                            )
-                        )
-                    }
-                    ItemUtils.addCustomTag(explorersChest, "explorersChest", "true")
+                val explorerChestChance = 1.0 / 300.0
+                if (Math.random() <= explorerChestChance) {
+                    val explorersChest = ItemDefinitions.getExplorersChest()
                     PlayerUtils.safeAddItem(player, explorersChest)
+                    onRareDrop(player, "探検家のチェスト", explorerChestChance)
                 }
             }
 
             LevelType.WOOD -> {
                 if (blockMaterial == Material.OAK_LOG) {
-                    handleLoot(
-                        player,
-                        block,
-                        blockDetail.levelType!!,
-                        "wood_drop_sap",
-                        mapOf(1 to 0.02, 2 to 0.06)
-                    ) { _, _ ->
-                        val sap = ItemStack.of(Material.HONEY_BOTTLE)
-                        sap.editMeta { meta ->
-                            meta.displayName(
-                                Component
-                                    .text()
-                                    .decoration(TextDecoration.ITALIC, false)
-                                    .content("樹液")
-                                    .build()
-                            )
-                            meta.lore(
-                                listOf(
-                                    Component
-                                        .text()
-                                        .decoration(TextDecoration.ITALIC, false)
-                                        .color(NamedTextColor.WHITE)
-                                        .content("手に持って右クリックで開封")
-                                        .build()
-                                )
-                            )
-                        }
+                    val sapChance = 1.0 / 80.0
+                    if (Math.random() <= sapChance) {
+                        val sap = ItemDefinitions.getSap()
                         PlayerUtils.safeAddItem(player, sap)
+                        onRareDrop(player, "樹液", sapChance)
                     }
-                } else if (blockMaterial == Material.OAK_LEAVES) {
-                    handleLoot(
-                        player,
-                        block,
-                        blockDetail.levelType!!,
-                        "wood_drop_fruits",
-                        mapOf(1 to 0.02, 2 to 0.06)
-                    ) { _, _ ->
-                        val itemStacks = PlayerUtils.populateLoot("ex:skills/fruits", block.location)
+                }
 
-                        if (itemStacks != null) {
-                            for (itemStack in itemStacks) {
-                                PlayerUtils.safeAddItem(player, itemStack)
-                            }
-                        }
+                val fruitsChestLevel = PlayerUtils.getSkillLevel(player, LevelType.WOOD, "wood_fruits_chest")
+                if (fruitsChestLevel != null && fruitsChestLevel >= 1) {
+                    val fruitsChestChance = 1.0 / 150.0
+                    val fruitsChest = ItemDefinitions.getFruitsChest()
+                    if (Math.random() <= fruitsChestChance) {
+                        PlayerUtils.safeAddItem(player, fruitsChest)
+                        onRareDrop(player, "森の恵みチェスト", fruitsChestChance)
                     }
                 }
             }
 
             LevelType.STONE -> {
-                handleLoot(
-                    player,
-                    block,
-                    blockDetail.levelType!!,
-                    "stone_drop_ore",
-                    mapOf(1 to 0.02, 2 to 0.06)
-                ) { _, _ ->
-                    val itemStacks = PlayerUtils.populateLoot("ex:skills/ores", block.location)
-
-                    if (itemStacks != null) {
-                        for (itemStack in itemStacks) {
-                            PlayerUtils.safeAddItem(player, itemStack)
+                val oreDropLevel = PlayerUtils.getSkillLevel(player, LevelType.STONE, "stone_ore_drop")
+                if (oreDropLevel != null && oreDropLevel >= 1) {
+                    val oreDropChance = 1.0 / 90.0
+                    if (Math.random() <= oreDropChance) {
+                        val itemStacks = PlayerUtils.populateLoot("ex:skills/ores", block.location)
+                        if (itemStacks != null) {
+                            for (itemStack in itemStacks) {
+                                PlayerUtils.safeAddItem(player, itemStack)
+                            }
                         }
+                        onSkillTriggered(player, "鉱石混入")
                     }
                 }
 
-                handleLoot(
-                    player,
-                    block,
-                    blockDetail.levelType!!,
-                    "stone_drop_bone",
-                    mapOf(1 to 0.005, 2 to 0.02)
-                ) { _, _ ->
+                val boneChance = 1.0 / 400.0
+                if (Math.random() <= boneChance) {
                     val boneBlock = ItemStack.of(Material.BONE_BLOCK)
                     boneBlock.editMeta { meta ->
                         meta.displayName(
@@ -281,32 +258,28 @@ object SkillEffects {
                         )
                     }
                     PlayerUtils.safeAddItem(player, boneBlock)
+                    onRareDrop(player, "化石ブロック", boneChance)
                 }
 
                 if (blockMaterial == Material.DEEPSLATE) {
-                    handleLoot(
-                        player,
-                        block,
-                        blockDetail.levelType!!,
-                        "stone_drop_ancient_debris",
-                        mapOf(1 to 0.002, 2 to 0.006)
-                    ) { _, _ ->
+                    val ancientDebrisChance = 1.0 / 200.0
+                    if (Math.random() <= ancientDebrisChance) {
                         val ancientDebris = ItemStack.of(Material.ANCIENT_DEBRIS)
                         PlayerUtils.safeAddItem(player, ancientDebris)
+                        PlayerUtils.unlockRecipe(player, "get_ancient_debris")
+                        onRareDrop(player, "古代の残骸", ancientDebrisChance)
                     }
                 }
             }
 
             LevelType.ORE -> {
-                handleLoot(
-                    player,
-                    block,
-                    blockDetail.levelType!!,
-                    "ore_random_buff",
-                    mapOf(1 to 0.08, 2 to 0.08)
-                ) { _, _ ->
-                    val level = PlayerUtils.getSkillLevel(player, blockDetail.levelType!!, "ore_random_buff") ?: return@handleLoot
-                    giveRandomEffect(player, level)
+                val randomBuffLevel = PlayerUtils.getSkillLevel(player, LevelType.ORE, "ore_random_buff")
+                if (randomBuffLevel != null && randomBuffLevel >= 1) {
+                    val effectChance = 1.0 / 20.0
+                    if (Math.random() <= effectChance) {
+                        giveRandomEffect(player)
+                        onSkillTriggered(player, "鉱夫の祝福")
+                    }
                 }
             }
 
@@ -316,58 +289,45 @@ object SkillEffects {
         }
     }
 
-    private fun handleLoot(
-        player: Player,
-        block: Block,
-        skillType: LevelType,
-        skillId: String,
-        dropChances: Map<Int, Double>,
-        dropAction: (Player, Block) -> Unit
-    ) {
-        val level = PlayerUtils.getSkillLevel(player, skillType, skillId)
-        if (level != null && level >= 1) {
-            val dropChance = dropChances[level] ?: 0.0
-            if (Math.random() <= dropChance) {
-                dropAction(player, block)
-            }
-        }
+    private fun onRareDrop(player: Player, itemName: String, chance: Double) {
+        player.playSound(player.location, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1f, 1f)
+        player.playSound(player.location, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1f, 1f)
+        player.sendMessage(
+            Component
+                .text()
+                .color(NamedTextColor.LIGHT_PURPLE)
+                .content("[RareDrop!] $itemName (${"%.4g".format(chance * 100)}%)")
+                .build()
+        )
+    }
+    private fun onSkillTriggered(player: Player, skillName: String) {
+        player.playSound(player.location, Sound.BLOCK_BEACON_ACTIVATE, 1f, 1f)
+        player.sendMessage(
+            Component
+                .text()
+                .color(NamedTextColor.AQUA)
+                .content("[Skill発動!] $skillName")
+                .build()
+        )
     }
 
-    private fun giveRandomEffect(player: Player, skillLevel: Int) {
+    private fun giveRandomEffect(player: Player) {
         val potionEffect: PotionEffect = when (Random().nextInt(4)) {
             0 -> {
-                PotionEffect(PotionEffectType.HASTE, 20, if (skillLevel == 1) 0 else 1, false, true)
+                PotionEffect(PotionEffectType.HASTE, 20 * 20, 1, false, true, true)
             }
             1 -> {
-                PotionEffect(PotionEffectType.SPEED, 20, if (skillLevel == 1) 1 else 2, false, true)
+                PotionEffect(PotionEffectType.SPEED, 20 * 20, 2, false, true, true)
             }
             2 -> {
-                PotionEffect(PotionEffectType.JUMP_BOOST, 20, if (skillLevel == 1) 1 else 2, false, true)
+                PotionEffect(PotionEffectType.JUMP_BOOST, 20 * 20, 2, false, true, true)
             }
             3 -> {
-                PotionEffect(PotionEffectType.NIGHT_VISION, if (skillLevel == 1) 20 else 60, 0, false, true)
+                PotionEffect(PotionEffectType.NIGHT_VISION, 30 * 20, 0, false, true, true)
             }
             else -> null
         } ?: return
 
         player.addPotionEffect(potionEffect)
-    }
-
-    private fun useMana(player: Player, skillDetail: SkillDetail, index: Int, mana: Int): Boolean {
-        val skillLevel = skillDetail.skillLevels.getOrNull(index)
-        if (skillLevel != null && skillLevel.manaCost != null) {
-            if (mana >= skillLevel.manaCost!!) {
-                PlayerUtils.addMana(player, -skillLevel.manaCost!!)
-                return true
-            } else {
-                player.sendMessage(
-                    Component
-                        .text()
-                        .color(NamedTextColor.RED)
-                        .content("マナが足りません")
-                )
-            }
-        }
-        return false
     }
 }

@@ -1,3 +1,5 @@
+package com.nicon.explorerPaper.model
+
 import com.j256.ormlite.field.DatabaseField
 import com.j256.ormlite.table.DatabaseTable
 
@@ -22,32 +24,47 @@ data class Players(
     var unlockedRecipeTags: String = "[]",
 
     @DatabaseField(columnName = "land_level")
-    var landLevel: Int = 0,
+    var landLevel: Int = 1,
 
     @DatabaseField(columnName = "land_xp")
     var landXp: Int = 0,
 
+    @DatabaseField(columnName = "land_level_cap_count")
+    var landLevelCapCount: Int = 0,
+
     @DatabaseField(columnName = "wood_level")
-    var woodLevel: Int = 0,
+    var woodLevel: Int = 1,
 
     @DatabaseField(columnName = "wood_xp")
     var woodXp: Int = 0,
 
+    @DatabaseField(columnName = "wood_level_cap_count")
+    var woodLevelCapCount: Int = 0,
+
     @DatabaseField(columnName = "stone_level")
-    var stoneLevel: Int = 0,
+    var stoneLevel: Int = 1,
 
     @DatabaseField(columnName = "stone_xp")
     var stoneXp: Int = 0,
 
+    @DatabaseField(columnName = "stone_level_cap_count")
+    var stoneLevelCapCount: Int = 0,
+
     @DatabaseField(columnName = "ore_level")
-    var oreLevel: Int = 0,
+    var oreLevel: Int = 1,
 
     @DatabaseField(columnName = "ore_xp")
     var oreXp: Int = 0,
+
+    @DatabaseField(columnName = "ore_level_cap_count")
+    var oreLevelCapCount: Int = 0,
 
     @DatabaseField(columnName = "skill_states", defaultValue = "{}")
     var skillStates: String = "{}",
 
     @DatabaseField
-    var mana: Int = 0
+    var mana: Int = 0,
+
+    @DatabaseField(columnName = "max_mana")
+    var maxMana: Int = 100
 )

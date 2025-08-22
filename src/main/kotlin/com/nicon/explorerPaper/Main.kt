@@ -8,10 +8,13 @@ import com.nicon.explorerPaper.events.player.PlayerEvents
 import com.nicon.explorerPaper.events.world.WorldEvents
 import com.nicon.explorerPaper.items.ItemData.ItemDetail
 import com.nicon.explorerPaper.items.ItemManager
+import com.nicon.explorerPaper.levelCaps.LevelCapData.LevelCapDetail
+import com.nicon.explorerPaper.levelCaps.LevelCapManager
 import com.nicon.explorerPaper.recipes.RecipeData.RecipeDetail
 import com.nicon.explorerPaper.recipes.RecipeManager
 import com.nicon.explorerPaper.skills.SkillData.SkillDetail
 import com.nicon.explorerPaper.skills.SkillManager
+import com.nicon.explorerPaper.utils.PD
 import com.nicon.explorerPaper.utils.PlayerUtils
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
@@ -30,6 +33,7 @@ class Main : JavaPlugin() {
             private set
         lateinit var skillDetails: Map<PlayerUtils.LevelType, Array<SkillDetail>>
             private set
+        lateinit var levelCapDetails: MutableMap<PlayerUtils.LevelType, Array<LevelCapDetail>>
     }
 
     override fun onEnable() {
@@ -45,6 +49,7 @@ class Main : JavaPlugin() {
         recipeDetails = RecipeManager.getDetails()
         enchantDetails = EnchantManager.getDetails()
         skillDetails = SkillManager.getDetails()
+        levelCapDetails = LevelCapManager.getDetails()
 
         val pluginManager = Bukkit.getPluginManager()
         pluginManager.registerEvents(PlayerEvents(), this)
@@ -55,10 +60,13 @@ class Main : JavaPlugin() {
 
         Bukkit.getScheduler().runTaskTimer(this, Runnable {
             for (player in this.server.onlinePlayers) {
-                PlayerUtils.addMana(player, 10)
-                PlayerUtils.refreshManaBossBar(player)
+                val maxMana = PD.getMaxMana(player)
+                val mana = PD.getMana(player)
+                if (maxMana > mana) {
+                    PlayerUtils.addMana(player, 10)
+                }
             }
-        }, 0L, 20L)
+        }, 0L, 20L * 2)
     }
 
     override fun onDisable() {

@@ -1,10 +1,10 @@
 {
-  "type": "minecraft:empty",
+  "type": "minecraft:chest",
   "pools": [
     {
       "rolls": {
-        "min": 2,
-        "max": 4
+        "min": 1,
+        "max": 5
       },
       "entries": [
         {
@@ -76,7 +76,7 @@
               "function": "minecraft:set_count",
               "count": {
                 "min": 1,
-                "max": 8
+                "max": 6
               }
             }
           ]
@@ -90,7 +90,7 @@
               "function": "minecraft:set_count",
               "count": {
                 "min": 1,
-                "max": 8
+                "max": 6
               }
             }
           ]
@@ -127,21 +127,6 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:iron_ingot",
-          "weight": 30,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 8
-              }
-            }
-          ],
-          "conditions": []
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:gold_ingot",
           "weight": 10,
           "functions": [
@@ -149,7 +134,7 @@
               "function": "minecraft:set_count",
               "count": {
                 "min": 1,
-                "max": 8
+                "max": 6
               }
             }
           ]
@@ -163,33 +148,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "min": 1,
-                "max": 8
+                "max": 6
               }
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "children": [
-            {
-              "type": "minecraft:item"
-            }
-          ],
-          "name": "minecraft:chainmail_helmet",
-          "weight": 10,
-          "functions": []
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:chainmail_helmet",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly",
-              "options": [
-                "ex:flight",
-                "ex:night_vision"
-              ]
             }
           ]
         }

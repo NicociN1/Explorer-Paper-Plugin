@@ -31,6 +31,7 @@ class RecipeData {
 
             class Property {
                 var customName: String? = null
+                var customTags: Map<String, String>? = null
 
                 constructor()
             }

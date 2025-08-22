@@ -1,6 +1,6 @@
 recipes:
-  - tag: stone_level_5
-    unlockCondition: "採石レベルが5になる"
+  - tag: stone_level_2
+    unlockCondition: "採石レベルが2になる"
     goldCost: 100
     name: "石のツルハシ"
     requireItems:
@@ -12,8 +12,8 @@ recipes:
       id: minecraft:stone_pickaxe
       amount: 1
 
-  - tag: wood_level_5
-    unlockCondition: "伐採レベルが5になる"
+  - tag: wood_level_2
+    unlockCondition: "伐採レベルが2になる"
     goldCost: 100
     name: "石の斧"
     requireItems:
@@ -25,8 +25,8 @@ recipes:
       id: minecraft:stone_axe
       amount: 1
 
-  - tag: land_level_5
-    unlockCondition: "整地レベルが5になる"
+  - tag: land_level_2
+    unlockCondition: "整地レベルが2になる"
     goldCost: 100
     name: "石のシャベル"
     requireItems:
@@ -38,8 +38,8 @@ recipes:
       id: minecraft:stone_shovel
       amount: 1
 
-  - tag: stone_level_15
-    unlockCondition: "採石レベルが15になる"
+  - tag: stone_level_10
+    unlockCondition: "採石レベルが10になる"
     goldCost: 900
     name: "鉄のツルハシ"
     requireItems:
@@ -51,8 +51,8 @@ recipes:
       id: minecraft:iron_pickaxe
       amount: 1
 
-  - tag: wood_level_15
-    unlockCondition: "伐採レベルが15になる"
+  - tag: wood_level_10
+    unlockCondition: "伐採レベルが10になる"
     goldCost: 900
     name: "鉄の斧"
     requireItems:
@@ -64,8 +64,8 @@ recipes:
       id: minecraft:iron_axe
       amount: 1
 
-  - tag: land_level_15
-    unlockCondition: "整地レベルが15になる"
+  - tag: land_level_10
+    unlockCondition: "整地レベルが10になる"
     goldCost: 900
     name: "鉄のシャベル"
     requireItems:
@@ -77,8 +77,8 @@ recipes:
       id: minecraft:iron_shovel
       amount: 1
 
-  - tag: stone_level_25
-    unlockCondition: "採石レベルが25になる"
+  - tag: stone_level_20
+    unlockCondition: "採石レベルが20になる"
     goldCost: 8000
     name: "ダイヤモンドのツルハシ"
     requireItems:
@@ -90,8 +90,8 @@ recipes:
       id: minecraft:diamond_pickaxe
       amount: 1
 
-  - tag: wood_level_25
-    unlockCondition: "伐採レベルが25になる"
+  - tag: wood_level_20
+    unlockCondition: "伐採レベルが20になる"
     goldCost: 8000
     name: "ダイヤモンドの斧"
     requireItems:
@@ -103,8 +103,8 @@ recipes:
       id: minecraft:diamond_axe
       amount: 1
 
-  - tag: land_level_25
-    unlockCondition: "整地レベルが25になる"
+  - tag: land_level_20
+    unlockCondition: "整地レベルが20になる"
     goldCost: 10000
     name: "ダイヤモンドのシャベル"
     requireItems:
@@ -114,6 +114,45 @@ recipes:
         amount: 4
     outputItem:
       id: minecraft:diamond_shovel
+      amount: 1
+
+  - tag: get_ancient_debris
+    unlockCondition: "古代の残骸を手にいれる"
+    goldCost: 20000
+    name: "ネザライトのツルハシ"
+    requireItems:
+      - id: minecraft:netherite_ingot
+        amount: 8
+      - id: minecraft:stick
+        amount: 4
+    outputItem:
+      id: minecraft:netherite_pickaxe
+      amount: 1
+
+  - tag: get_ancient_debris
+    unlockCondition: "古代の残骸を手にいれる"
+    goldCost: 20000
+    name: "ネザライトの斧"
+    requireItems:
+      - id: minecraft:netherite_ingot
+        amount: 6
+      - id: minecraft:stick
+        amount: 4
+    outputItem:
+      id: minecraft:netherite_axe
+      amount: 1
+
+  - tag: get_ancient_debris
+    unlockCondition: "古代の残骸を手にいれる"
+    goldCost: 20000
+    name: "ネザライトのシャベル"
+    requireItems:
+      - id: minecraft:netherite_ingot
+        amount: 4
+      - id: minecraft:stick
+        amount: 4
+    outputItem:
+      id: minecraft:netherite_shovel
       amount: 1
 
   - tag: wood_mined
@@ -136,7 +175,7 @@ recipes:
         amount: 2
     outputItem:
       id: minecraft:coal
-      amount: 1
+      amount: 2
 
   - tag: copper_ore_mined
     unlockCondition: "銅鉱石を採掘する"
@@ -216,6 +255,19 @@ recipes:
       id: minecraft:diamond
       amount: 1
 
+  - tag: get_ancient_debris
+    unlockCondition: "古代の残骸を手に入れる"
+    goldCost: 1000
+    name: "ネザライトインゴット"
+    requireItems:
+      - id: minecraft:ancient_debris
+        amount: 1
+      - id: minecraft:gold_ingot
+        amount: 4
+    outputItem:
+      id: minecraft:netherite_ingot
+      amount: 1
+
   - tag: coal_ore_mined
     unlockCondition: "石炭鉱石を採掘する"
     goldCost: 15
@@ -259,7 +311,26 @@ recipes:
     name: "スケルトンの頭"
     requireItems:
       - id: minecraft:bone_block
-        amount: 64
+        amount: 16
     outputItem:
       id: minecraft:skeleton_skull
       amount: 1
+
+  - tag: copper_ore_mined
+    unlockCondition: "銅鉱石を採掘する"
+    goldCost: 4000
+    name: "探検家のチェスト"
+    requireItems:
+      - id: minecraft:copper_ingot
+        amount: 32
+      - id: minecraft:oak_log
+        amount: 32
+      - id: minecraft:gold_ingot
+        amount: 2
+    outputItem:
+      id: minecraft:chest
+      amount: 1
+      properties:
+        customName: "探検家のチェスト"
+        customTags:
+          explorersChest: "true"

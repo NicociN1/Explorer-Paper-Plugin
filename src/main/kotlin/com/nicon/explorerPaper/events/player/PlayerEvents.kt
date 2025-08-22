@@ -7,6 +7,7 @@ import com.nicon.explorerPaper.definitions.ItemDefinitions
 import com.nicon.explorerPaper.definitions.Constants
 import com.nicon.explorerPaper.utils.GameUtils
 import com.nicon.explorerPaper.utils.ItemUtils
+import com.nicon.explorerPaper.utils.PD
 import com.nicon.explorerPaper.utils.PlayerUtils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -14,6 +15,7 @@ import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -23,6 +25,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -32,6 +35,7 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scoreboard.Criteria
 import org.bukkit.scoreboard.DisplaySlot
+import java.util.UUID
 
 class PlayerEvents : Listener {
     @EventHandler
@@ -77,6 +81,7 @@ class PlayerEvents : Listener {
 
         PlayerUtils.refreshLevelUnlockRecipe(player)
         PlayerUtils.refreshSidebar(player)
+        PlayerUtils.refreshManaBossBar(player)
     }
 
     @EventHandler
@@ -109,23 +114,82 @@ class PlayerEvents : Listener {
         }
     }
 
+    val itemInteractCooldown: MutableList<UUID> = mutableListOf()
+
     @EventHandler
     fun onInteract(event: PlayerInteractEvent) {
         val player = event.player
         val block = event.clickedBlock
         if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.RIGHT_CLICK_BLOCK) {
-            val handItem = player.inventory.getItem(EquipmentSlot.HAND)
-            val itemId = handItem.type.key.toString()
+            if (itemInteractCooldown.contains(player.uniqueId)) {
+                player.sendMessage(
+                    Component
+                        .text("クールダウン中です")
+                )
+                return
+            }
+            itemInteractCooldown.add(player.uniqueId)
+            Bukkit.getScheduler().runTaskLater(Main.instance, Runnable {
+                itemInteractCooldown.remove(player.uniqueId)
+            }, 5L)
 
-            when (itemId) {
-                "minecraft:compass" -> {
+            val handItem = player.inventory.itemInMainHand
+
+            event.isCancelled = true
+            when (handItem.type) {
+                Material.COMPASS -> {
                     InventoryUIDefinitions.openMenuUI(player)
                 }
-                "minecraft:chest" -> {
-                    val isExplorersChest = ItemUtils.getCustomTag(handItem, "explorersChest") == "true"
-                    if (isExplorersChest) {
-                        GameUtils.openLootChest(player, "ex:chests/explorers_chest", "探検家のチェスト")
+                Material.CHEST -> {
+                    when {
+                        ItemUtils.getCustomTag(handItem, "explorersChest") == "true" -> {
+                            val isSuccess = GameUtils.openLootChest(player, "ex:chests/explorers_chest", "探検家のチェスト")
+                            if (isSuccess) {
+                                PlayerUtils.clearHandItems(player, 1)
+                                player.playSound(player.location, Sound.BLOCK_CHEST_OPEN, 1f, 1f)
+                            }
+                        }
+                        ItemUtils.getCustomTag(handItem, "fruitsChest") == "true" -> {
+                            val isSuccess = GameUtils.openLootChest(player, "ex:chests/fruits_chest", "森の恵みチェスト")
+                            if (isSuccess) {
+                                PlayerUtils.clearHandItems(player, 1)
+                                player.playSound(player.location, Sound.BLOCK_CHEST_OPEN, 1f, 1f)
+                            }
+                        }
                     }
+                }
+                Material.HONEY_BOTTLE -> {
+                    PlayerUtils.clearItems(player, "minecraft:honey_bottle", 1)
+                    val currentMaxMana = PD.getMaxMana(player)
+                    PD.setMaxMana(player, currentMaxMana + 10)
+                    player.sendMessage(
+                        Component
+                            .text()
+                            .color(NamedTextColor.GOLD)
+                            .content("樹液を飲み、マナの最大値が10増加した！")
+                    )
+                    player.playSound(player.location, Sound.ITEM_HONEY_BOTTLE_DRINK, 1f, 1f)
+                    player.playSound(player.location, Sound.BLOCK_BEACON_ACTIVATE, 1f, 1f)
+
+                    PlayerUtils.refreshManaBossBar(player)
+                }
+                Material.APPLE -> {
+                    PlayerUtils.clearItems(player, "minecraft:apple", 1)
+                    PlayerUtils.addMana(player, 50)
+                    player.playSound(player.location, Sound.BLOCK_BEACON_ACTIVATE, 1f, 1f)
+                }
+                Material.GOLDEN_APPLE -> {
+                    PlayerUtils.clearItems(player, "minecraft:golden_apple", 1)
+                    PlayerUtils.addMana(player, 300)
+                    player.playSound(player.location, Sound.BLOCK_BEACON_ACTIVATE, 1f, 1f)
+                }
+                Material.ENCHANTED_GOLDEN_APPLE -> {
+                    PlayerUtils.clearItems(player, "minecraft:enchanted_golden_apple", 1)
+                    PlayerUtils.addMana(player, 1000)
+                    player.playSound(player.location, Sound.BLOCK_BEACON_POWER_SELECT, 1f, 1f)
+                }
+                else -> {
+                    event.isCancelled = false
                 }
             }
 
@@ -159,7 +223,7 @@ class PlayerEvents : Listener {
         val oldItemStack = event.oldItem
 
         for (enchant in newItemStack.enchantments) {
-            when (enchant.key.key().toString()) {
+            when (enchant.key.key.toString()) {
                 "ex:night_vision" -> {
                     player.addPotionEffect(
                         PotionEffect(
@@ -192,6 +256,11 @@ class PlayerEvents : Listener {
 
     @EventHandler
     fun onCraft(event: CraftItemEvent) {
+        event.isCancelled = true
+    }
+
+    @EventHandler
+    fun onEat(event: PlayerItemConsumeEvent) {
         event.isCancelled = true
     }
 }

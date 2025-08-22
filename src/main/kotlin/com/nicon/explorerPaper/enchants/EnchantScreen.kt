@@ -5,6 +5,7 @@ import com.nicon.explorerPaper.definitions.ItemDefinitions
 import com.nicon.explorerPaper.utils.InventoryUI
 import com.nicon.explorerPaper.utils.InventoryUI.Page
 import com.nicon.explorerPaper.utils.InventoryUI.UISlot
+import com.nicon.explorerPaper.utils.PD
 import com.nicon.explorerPaper.utils.PlayerUtils
 import io.papermc.paper.registry.RegistryAccess
 import io.papermc.paper.registry.RegistryKey
@@ -21,6 +22,12 @@ import java.util.Random
 import kotlin.math.floor
 
 object EnchantScreen {
+    const val GIVE_ENCHANT_AMETHYST_COST = 30
+    const val GIVE_ENCHANT_LAPIS_LAZULI = 8
+    const val REROLL_ENCHANT_AMETHYST_COST = 30
+    const val REROLL_ENCHANT_REDSTONE = 8
+    const val DISASSEMBLE_ENCHANT_GOLD_COST = 10000
+
     fun openEnchantMenu(inventoryUI: InventoryUI, player: Player) {
         val enchantPage = Page().lockEmptySlots()
 
@@ -118,13 +125,13 @@ object EnchantScreen {
             )
             val lore = mutableListOf<Component>()
 
-            val amethyst = PlayerUtils.PlayerDatabase.getAmethyst(player) ?: 0
+            val amethyst = PD.getAmethyst(player)
             lore.add(
                 Component
                     .text()
                     .decoration(TextDecoration.ITALIC, false)
-                    .color(if (amethyst >= 150) NamedTextColor.LIGHT_PURPLE else NamedTextColor.RED)
-                    .content("消費Amethyst: 150A")
+                    .color(if (amethyst >= GIVE_ENCHANT_AMETHYST_COST) NamedTextColor.LIGHT_PURPLE else NamedTextColor.RED)
+                    .content("消費Amethyst: ${GIVE_ENCHANT_AMETHYST_COST}A")
                     .build()
             )
 
@@ -133,8 +140,8 @@ object EnchantScreen {
                 Component
                     .text()
                     .decoration(TextDecoration.ITALIC, false)
-                    .color(if (lapisAmount >= 64) NamedTextColor.WHITE else NamedTextColor.RED)
-                    .content("消費アイテム: ラピスラズリx64")
+                    .color(if (lapisAmount >= GIVE_ENCHANT_LAPIS_LAZULI) NamedTextColor.WHITE else NamedTextColor.RED)
+                    .content("消費アイテム: ラピスラズリx${GIVE_ENCHANT_LAPIS_LAZULI}")
                     .build()
             )
 
@@ -152,25 +159,30 @@ object EnchantScreen {
                     grantingPage.button(slot, UISlot(doGrantingIcon) {
                         val itemStack = inventoryUI.inventory.getItem(22) ?: return@UISlot
 
-                        val canEnchantCount = getCanEnchantCount(itemStack)
+                        val canEnchantCount = getEnchantableCount(itemStack)
 
-                        val amethyst = PlayerUtils.PlayerDatabase.getAmethyst(player) ?: 0
+                        val amethyst = PD.getAmethyst(player)
                         val lapisAmount = PlayerUtils.getItemAmount(player, "minecraft:lapis_lazuli")
 
-                        if (canEnchantCount == 0 || amethyst < 150 || lapisAmount < 64 || itemStack.enchantments.isNotEmpty()) {
+                        if (canEnchantCount == 0 || amethyst < GIVE_ENCHANT_AMETHYST_COST || lapisAmount < GIVE_ENCHANT_LAPIS_LAZULI || itemStack.enchantments.isNotEmpty()) {
                             player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 1f)
                             return@UISlot
                         }
 
-                        PlayerUtils.PlayerDatabase.setAmethyst(player, amethyst - 150)
-                        PlayerUtils.clearItems(player, "minecraft:lapis_lazuli", 64)
-
+                        val enchants: MutableList<Pair<Enchantment, Int>> = mutableListOf()
                         val rollCount = Random().nextInt(canEnchantCount) + 1
 
-                        for (i in 0..rollCount) {
-                            val enchant = rollEnchant(itemStack) ?: break
+                        for (i in 0..<rollCount) {
+                            val enchant = rollEnchant(itemStack) ?: return@UISlot
+                            enchants.add(enchant)
+                        }
+                        itemStack.removeEnchantments()
+                        for (enchant in enchants) {
                             itemStack.addEnchantment(enchant.first, enchant.second)
                         }
+
+                        PD.setAmethyst(player, amethyst - GIVE_ENCHANT_AMETHYST_COST)
+                        PlayerUtils.clearItems(player, "minecraft:lapis_lazuli", GIVE_ENCHANT_LAPIS_LAZULI)
 
                         inventoryUI.inventory.setItem(22, ItemStack.empty())
                         PlayerUtils.safeAddItem(player, itemStack)
@@ -203,23 +215,23 @@ object EnchantScreen {
             )
             val lore = mutableListOf<Component>()
 
-            val amethyst = PlayerUtils.PlayerDatabase.getAmethyst(player) ?: 0
+            val amethyst = PD.getAmethyst(player)
             lore.add(
                 Component
                     .text()
                     .decoration(TextDecoration.ITALIC, false)
-                    .color(if (amethyst >= 50) NamedTextColor.LIGHT_PURPLE else NamedTextColor.RED)
-                    .content("消費Amethyst: 50A")
+                    .color(if (amethyst >= REROLL_ENCHANT_AMETHYST_COST) NamedTextColor.LIGHT_PURPLE else NamedTextColor.RED)
+                    .content("消費Amethyst: ${REROLL_ENCHANT_AMETHYST_COST}A")
                     .build()
             )
 
-            val lapisAmount = PlayerUtils.getItemAmount(player, "minecraft:lapis_lazuli")
+            val redstoneAmount = PlayerUtils.getItemAmount(player, "minecraft:redstone")
             lore.add(
                 Component
                     .text()
                     .decoration(TextDecoration.ITALIC, false)
-                    .color(if (lapisAmount >= 32) NamedTextColor.WHITE else NamedTextColor.RED)
-                    .content("消費アイテム: レッドストーンx32")
+                    .color(if (redstoneAmount >= REROLL_ENCHANT_REDSTONE) NamedTextColor.WHITE else NamedTextColor.RED)
+                    .content("消費アイテム: レッドストーンx${REROLL_ENCHANT_REDSTONE}")
                     .build()
             )
 
@@ -237,27 +249,30 @@ object EnchantScreen {
                     rerollPage.button(slot, UISlot(doRerollIcon) {
                         val itemStack = inventoryUI.inventory.getItem(22) ?: return@UISlot
 
-                        val canEnchantCount = getCanEnchantCount(itemStack)
+                        val canEnchantCount = getEnchantableCount(itemStack)
 
-                        val amethyst = PlayerUtils.PlayerDatabase.getAmethyst(player) ?: 0
-                        val lapisAmount = PlayerUtils.getItemAmount(player, "minecraft:lapis_lazuli")
+                        val amethyst = PD.getAmethyst(player)
+                        val redstoneAmount = PlayerUtils.getItemAmount(player, "minecraft:redstone")
 
-                        if (canEnchantCount == 0 || amethyst < 50 || lapisAmount < 32 || itemStack.enchantments.isEmpty()) {
-                            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 1f)
+                        if (canEnchantCount == 0 || amethyst < REROLL_ENCHANT_AMETHYST_COST || redstoneAmount < REROLL_ENCHANT_REDSTONE || itemStack.enchantments.isEmpty()) {
+                            player.playSound(player.location, Sound.UI_BUTTON_CLICK, 1f, 0.8f)
                             return@UISlot
                         }
 
-                        PlayerUtils.PlayerDatabase.setAmethyst(player, amethyst - 50)
-                        PlayerUtils.clearItems(player, "minecraft:lapis_lazuli", 32)
-
-                        itemStack.removeEnchantments()
-
+                        val enchants: MutableList<Pair<Enchantment, Int>> = mutableListOf()
                         val rollCount = Random().nextInt(canEnchantCount) + 1
 
-                        for (i in 0..rollCount) {
-                            val enchant = rollEnchant(itemStack) ?: break
+                        for (i in 0..<rollCount) {
+                            val enchant = rollEnchant(itemStack) ?: return@UISlot
+                            enchants.add(enchant)
+                        }
+                        itemStack.removeEnchantments()
+                        for (enchant in enchants) {
                             itemStack.addEnchantment(enchant.first, enchant.second)
                         }
+
+                        PD.setAmethyst(player, amethyst - REROLL_ENCHANT_AMETHYST_COST)
+                        PlayerUtils.clearItems(player, "minecraft:redstone", REROLL_ENCHANT_REDSTONE)
 
                         inventoryUI.inventory.setItem(22, ItemStack.empty())
                         PlayerUtils.safeAddItem(player, itemStack)
@@ -290,13 +305,13 @@ object EnchantScreen {
             )
             val lore = mutableListOf<Component>()
 
-            val gold = PlayerUtils.PlayerDatabase.getGold(player) ?: 0
+            val gold = PD.getGold(player)
             lore.add(
                 Component
                     .text()
                     .decoration(TextDecoration.ITALIC, false)
-                    .color(if (gold >= 50) NamedTextColor.GOLD else NamedTextColor.RED)
-                    .content("消費Gold: 2000G")
+                    .color(if (gold >= DISASSEMBLE_ENCHANT_GOLD_COST) NamedTextColor.GOLD else NamedTextColor.RED)
+                    .content("消費Gold: ${DISASSEMBLE_ENCHANT_GOLD_COST}G")
                     .build()
             )
 
@@ -314,22 +329,22 @@ object EnchantScreen {
                     disassemblePage.button(slot, UISlot(doDisassembleIcon) {
                         val itemStack = inventoryUI.inventory.getItem(22) ?: return@UISlot
 
-                        val canEnchantCount = getCanEnchantCount(itemStack)
+                        val canEnchantCount = getEnchantableCount(itemStack)
 
-                        val gold = PlayerUtils.PlayerDatabase.getGold(player) ?: 0
+                        val gold = PD.getGold(player)
 
-                        if (canEnchantCount == 0 || gold < 2000 || itemStack.enchantments.isEmpty()) {
-                            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 1f)
+                        if (canEnchantCount == 0 || gold < DISASSEMBLE_ENCHANT_GOLD_COST || itemStack.enchantments.isEmpty()) {
+                            player.playSound(player.location, Sound.UI_BUTTON_CLICK, 1f, 0.8f)
                             return@UISlot
                         }
 
-                        PlayerUtils.PlayerDatabase.setGold(player, gold - 2000)
+                        PD.setGold(player, gold - DISASSEMBLE_ENCHANT_GOLD_COST)
 
-                        val amethyst = PlayerUtils.PlayerDatabase.getAmethyst(player) ?: 0
+                        val amethyst = PD.getAmethyst(player)
 
                         val addAmethyst = calculateAmethyst(itemStack)
 
-                        PlayerUtils.PlayerDatabase.setAmethyst(player, amethyst + addAmethyst)
+                        PD.setAmethyst(player, amethyst + addAmethyst)
 
                         itemStack.removeEnchantments()
 
@@ -341,9 +356,10 @@ object EnchantScreen {
                             Component
                                 .text()
                                 .color(NamedTextColor.LIGHT_PURPLE)
-                                .content("エンチャントの分解に成功し、${addAmethyst}Amethystを手に入れました！")
+                                .content("エンチャントの分解に成功し、${addAmethyst}Amethystを手に入れた！")
                                 .build()
                         )
+                        PlayerUtils.refreshSidebar(player)
                     })
                 }
 
@@ -373,13 +389,21 @@ object EnchantScreen {
             rand < cumulative
         }
 
-        val key = NamespacedKey.fromString(selected.key) ?: return null
+        val key = NamespacedKey.fromString(selected.key)
+        if (key == null) {
+            Main.instance.logger.info("エンチャントKeyがnullです")
+            return null
+        }
         val enchantRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
-        val enchantment = enchantRegistry.get(key) ?: return null
+        val enchantment = enchantRegistry.get(key)
+        if (enchantment == null) {
+            Main.instance.logger.info("Enchantmentがnullです")
+            return null
+        }
         return Pair(enchantment, Random().nextInt(enchantment.maxLevel) + 1)
     }
 
-    fun getCanEnchantCount(itemStack: ItemStack): Int {
+    fun getEnchantableCount(itemStack: ItemStack): Int {
         val itemId = itemStack.type.key.toString()
         val enchantDetail = Main.enchantDetails.entries.firstOrNull{ (regexStr, _) ->
             Regex(regexStr).matches(itemId)
@@ -391,7 +415,7 @@ object EnchantScreen {
     fun calculateAmethyst(itemStack: ItemStack): Int {
         var addAmethyst = 0
         for (enchant in itemStack.enchantments) {
-            addAmethyst += floor(enchant.value.toDouble() / enchant.key.maxLevel).toInt() * 15
+            addAmethyst += (floor(enchant.value.toDouble() / enchant.key.maxLevel.toDouble()) * 15).toInt()
         }
 
         return addAmethyst

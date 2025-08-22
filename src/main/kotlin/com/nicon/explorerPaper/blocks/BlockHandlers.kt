@@ -1,11 +1,11 @@
 package com.nicon.explorerPaper.blocks
 
-import com.nicon.explorerPaper.Main
-import com.nicon.explorerPaper.definitions.Constants
 import com.nicon.explorerPaper.skills.SkillEffects
 import com.nicon.explorerPaper.utils.GameUtils
+import com.nicon.explorerPaper.utils.PD
 import com.nicon.explorerPaper.utils.PlayerUtils
 import com.nicon.explorerPaper.utils.PlayerUtils.LevelType
+import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
@@ -13,54 +13,25 @@ import java.util.Random
 
 object BlockHandlers {
     fun onBreak(player: Player, block: Block) {
-        val blockId = block.type.key.toString()
         val blockDetail = GameUtils.getBlockDetail(block) ?: return
 
-        val blocksMined = PlayerUtils.PlayerDatabase.getBlocksMined(player) ?: 0
-        PlayerUtils.PlayerDatabase.setBlocksMined(player, blocksMined + 1)
+        val blocksMined = PD.getBlocksMined(player)
+        PD.setBlocksMined(player, blocksMined + 1)
 
         if (blockDetail.lootTable != null) {
             when (blockDetail.levelType) {
-                LevelType.WOOD -> {
-                    val woodDoubleDropLevel = PlayerUtils.getSkillLevel(player, LevelType.WOOD, "wood_double_drop")
-                    val doubleDropChance = when (woodDoubleDropLevel) {
-                        1 -> 0.2
-                        2 -> 0.6
-                        else -> 0.0
-                    }
-                    if (Math.random() <= doubleDropChance) {
-                        repeat(2) {
-                            lootItem(player, blockDetail.lootTable!!)
-                        }
-                    } else {
-                        lootItem(player, blockDetail.lootTable!!)
-                    }
-                }
                 LevelType.ORE -> {
                     val smeltLevel = PlayerUtils.getSkillLevel(player, blockDetail.levelType!!, "ore_auto_smelting")
-                    val autoSmeltingState = PlayerUtils.PlayerDatabase.getSkillStates(player)["ore_auto_smelting"]
+                    val autoSmeltingState = PD.getSkillStates(player)["ore_auto_smelting"]
                     val smelted = blockDetail.smeltedLootTable
                     val normal = blockDetail.lootTable!!
 
                     val lootTable = when {
                         smeltLevel == null || smeltLevel < 1 || smelted == null || autoSmeltingState == "INACTIVE" -> normal
-                        smeltLevel == 1 && Constants.HIGH_GRADE_ORES.contains(block.type) -> normal
                         else -> smelted
                     }
 
-                    val dropBonusLevel = PlayerUtils.getSkillLevel(player, blockDetail.levelType!!, "ore_drop_bonus")
-
-                    val isApplyBonus = when (dropBonusLevel) {
-                        1 -> Math.random() <= 0.25
-                        2 -> Math.random() <= 0.5
-                        else -> false
-                    }
-
-                    val repeatCount = if (isApplyBonus) Random().nextInt(3) + 1 else 1
-
-                    repeat(repeatCount) {
-                        lootItem(player, lootTable)
-                    }
+                    lootItem(player, lootTable)
                 }
                 else -> {
                     lootItem(player, blockDetail.lootTable!!)
@@ -72,56 +43,61 @@ object BlockHandlers {
             PlayerUtils.addExp(player, blockDetail.levelType!!, blockDetail.xp!!)
         }
 
-        when (blockId) {
-            "minecraft:oak_log" -> {
+        when (block.type) {
+            Material.OAK_LOG -> {
                 PlayerUtils.unlockRecipe(player, "wood_mined")
             }
 
-            "minecraft:coal_ore" -> {
+            Material.COAL_ORE, Material.DEEPSLATE_COAL_ORE -> {
                 PlayerUtils.unlockRecipe(player, "coal_ore_mined")
             }
 
-            "minecraft:copper_ore" -> {
+            Material.COPPER_ORE, Material.DEEPSLATE_COPPER_ORE -> {
                 PlayerUtils.unlockRecipe(player, "copper_ore_mined")
             }
 
-            "minecraft:iron_ore" -> {
+            Material.IRON_ORE, Material.DEEPSLATE_IRON_ORE -> {
                 PlayerUtils.unlockRecipe(player, "iron_ore_mined")
             }
 
-            "minecraft:redstone_ore" -> {
+            Material.REDSTONE_ORE, Material.DEEPSLATE_REDSTONE_ORE -> {
                 PlayerUtils.unlockRecipe(player, "redstone_ore_mined")
             }
 
-            "minecraft:lapis_ore" -> {
+            Material.LAPIS_ORE, Material.DEEPSLATE_LAPIS_ORE -> {
                 PlayerUtils.unlockRecipe(player, "lapis_ore_mined")
             }
 
-            "minecraft:gold_ore" -> {
+            Material.GOLD_ORE, Material.DEEPSLATE_GOLD_ORE -> {
                 PlayerUtils.unlockRecipe(player, "gold_ore_mined")
             }
 
-            "minecraft:diamond_ore" -> {
+            Material.DIAMOND_ORE, Material.DEEPSLATE_DIAMOND_ORE -> {
                 PlayerUtils.unlockRecipe(player, "diamond_ore_mined")
             }
+
+            Material.DEEPSLATE -> {
+                PlayerUtils.unlockRecipe(player, "deepslate_mined")
+            }
+
+            else -> {}
         }
 
         if (blockDetail.gold != null) {
             val goldDrop = blockDetail.gold!!
             val goldRushLevel = PlayerUtils.getSkillLevel(player, LevelType.LAND, "land_gold_rush")
             val goldMultiplier = if (blockDetail.levelType == LevelType.LAND) when (goldRushLevel) {
-                1 -> 2
-                2 -> 4
+                1 -> 3
+                2 -> 6
                 else -> 1
             } else 1
             if (Math.random() <= goldDrop.chance * goldMultiplier) {
-                val random = Random()
-                val goldValue = (random.nextInt(goldDrop.min, goldDrop.max) + 1) * goldMultiplier
+                val goldValue = if (goldDrop.min < goldDrop.max) (Random().nextInt(goldDrop.min, goldDrop.max) + 1) * goldMultiplier else goldDrop.min
                 val spawnLocation = block.location.add(0.5, 0.5, 0.5)
                 GameUtils.spawnGold(goldValue, spawnLocation)
-                player.playSound(spawnLocation, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f)
-                val currentGold = PlayerUtils.PlayerDatabase.getGold(player) ?: 0
-                PlayerUtils.PlayerDatabase.setGold(player, currentGold + goldValue)
+                player.playSound(spawnLocation, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1f)
+                val currentGold = PD.getGold(player)
+                PD.setGold(player, currentGold + goldValue)
             }
         }
         if (blockDetail.amethyst != null) {
@@ -132,8 +108,8 @@ object BlockHandlers {
                 val spawnLocation = block.location.add(0.5, 0.5, 0.5)
                 GameUtils.spawnAmethyst(amethystValue, spawnLocation)
                 player.playSound(spawnLocation, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f)
-                val currentAmethyst = PlayerUtils.PlayerDatabase.getAmethyst(player) ?: 0
-                PlayerUtils.PlayerDatabase.setAmethyst(player, currentAmethyst + amethystValue)
+                val currentAmethyst = PD.getAmethyst(player)
+                PD.setAmethyst(player, currentAmethyst + amethystValue)
             }
         }
 
